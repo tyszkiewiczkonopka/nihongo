@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Japanese Counters Quiz</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f0;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      color: #1a1a18;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      color: #1a1a18;
+    }
+
+    .home-link {
+      display: inline-block;
+      font-size: 13px;
+      color: #1a56db;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+    }
+
+    .home-link:hover { text-decoration: underline; }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    select {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #f5f5f0;
+      color: #1a1a18;
+      cursor: pointer;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #f5f5f0;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .mode-btn.active {
+      background: #e8f0fe;
+      color: #1a56db;
+      border-color: #a4c0f4;
+    }
+
+    .card {
+      background: #f9f9f6;
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .prompt-label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .number-display {
+      font-size: 56px;
+      font-weight: 500;
+      line-height: 1.1;
+      color: #1a1a18;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .ampm-badge {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1a56db;
+      background: #e8f0fe;
+      padding: 3px 10px;
+      border-radius: 8px;
+    }
+
+    .unit-label {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sub-hint {
+      font-size: 20px;
+      color: #555;
+      min-height: 28px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      font-size: 18px;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #d0d0c8;
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a18;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #1a56db; }
+
+    button {
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #fff;
+      color: #1a1a18;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #f0f0ea; }
+
+    .next-btn {
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .feedback {
+      min-height: 32px;
+      font-size: 15px;
+      font-weight: 500;
+      text-align: center;
+      border-radius: 8px;
+      padding: 6px 0;
+      margin-bottom: 4px;
+    }
+
+    .feedback.correct { color: #166534; background: #dcfce7; }
+    .feedback.wrong   { color: #991b1b; background: #fee2e2; }
+
+    .accepted {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      min-height: 18px;
+      margin-bottom: 2px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      margin-top: 1.5rem;
+    }
+
+    .stat {
+      flex: 1;
+      background: #f5f5f0;
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a18; color: #f0f0ea; }
+      .container { background: #2a2a26; box-shadow: none; }
+      .card { background: #222220; }
+      .number-display { color: #f0f0ea; }
+      .sub-hint { color: #aaa; }
+      select, button, input[type="text"] {
+        background: #333330; border-color: #444440; color: #f0f0ea;
+      }
+      button:hover { background: #3a3a36; }
+      .mode-btn { background: #333330; color: #aaa; border-color: #444440; }
+      .mode-btn.active { background: #1e3a6e; color: #93b4f5; border-color: #2d5299; }
+      .ampm-badge { background: #1e3a6e; color: #93b4f5; }
+      .stat { background: #222220; }
+      h1 { color: #f0f0ea; }
+      .home-link { color: #93b4f5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="home-link" href="./">← Home</a>
+    <h1>Japanese counters quiz 🔢</h1>
+
+    <div class="controls">
+      <select id="counterSelect">
+        <option value="hours">Hours</option>
+        <option value="age">Age (歳)</option>
+        <option value="class">Class year (年生)</option>
+      </select>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeVal" onclick="setMode('val')">→ Japanese</button>
+      <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese →</button>
+    </div>
+
+    <div class="card">
+      <div class="prompt-label" id="promptLabel">How do you say this in Japanese?</div>
+      <div class="number-display" id="numDisplay">—</div>
+      <div class="unit-label" id="unitLabel"></div>
+      <div class="sub-hint" id="subHint"></div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="answerInput" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <button onclick="checkAnswer()">Check</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="accepted" id="acceptedLabel"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next →</button>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
+      <div class="stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">wrong</div></div>
+      <div class="stat"><div class="stat-num" id="statStreak">0</div><div class="stat-label">streak</div></div>
+    </div>
+  </div>
+
+  <script>
+    const tensPrefixR = {0:'',1:'juu',2:'nijuu',3:'sanjuu',4:'yonjuu',5:'gojuu',6:'rokujuu',7:'nanajuu',8:'hachijuu',9:'kyuujuu'};
+    const tensPrefixH = {0:'',1:'じゅう',2:'にじゅう',3:'さんじゅう',4:'よんじゅう',5:'ごじゅう',6:'ろくじゅう',7:'ななじゅう',8:'はちじゅう',9:'きゅうじゅう'};
+
+    const hourR = {1:'ichiji',2:'niji',3:'sanji',4:'yoji',5:'goji',6:'rokuji',7:'shichiji',8:'hachiji',9:'kuji',10:'juuji',11:'juuichiji',12:'juuniji'};
+    const hourH = {1:'いちじ',2:'にじ',3:'さんじ',4:'よじ',5:'ごじ',6:'ろくじ',7:'しちじ',8:'はちじ',9:'くじ',10:'じゅうじ',11:'じゅういちじ',12:'じゅうにじ'};
+    const minTensPrefixR = {0:'',1:'juu',2:'nijuu',3:'sanjuu',4:'yonjuu',5:'gojuu'};
+    const minTensPrefixH = {0:'',1:'じゅう',2:'にじゅう',3:'さんじゅう',4:'よんじゅう',5:'ごじゅう'};
+    const minOnesR = {1:'ippun',2:'nifun',3:'sanpun',4:'yonpun',5:'gofun',6:'roppun',7:'nanafun',8:'happun',9:'kyuufun'};
+    const minOnesH = {1:'いっぷん',2:'にふん',3:'さんぷん',4:'よんぷん',5:'ごふん',6:'ろっぷん',7:'ななふん',8:'はっぷん',9:'きゅうふん'};
+    const minTensZeroR = {1:'juppun',2:'nijuppun',3:'sanjuppun',4:'yonjuppun',5:'gojuppun'};
+    const minTensZeroH = {1:'じゅっぷん',2:'にじゅっぷん',3:'さんじゅっぷん',4:'よんじゅっぷん',5:'ごじゅっぷん'};
+    const ampmR = { am: 'gozen', pm: 'gogo' };
+    const ampmH = { am: 'ごぜん', pm: 'ごご' };
+
+    const ageOnesR = {1:'issai',2:'nisai',3:'sansai',4:'yonsai',5:'gosai',6:'rokusai',7:'nanasai',8:'hassai',9:'kyuusai'};
+    const ageOnesH = {1:'いっさい',2:'にさい',3:'さんさい',4:'よんさい',5:'ごさい',6:'ろくさい',7:'ななさい',8:'はっさい',9:'きゅうさい'};
+    const ageTensZeroR = {1:'jussai',2:'nijussai',3:'sanjussai',4:'yonjussai',5:'gojussai',6:'rokujussai',7:'nanajussai',8:'hachijussai',9:'kyuujussai'};
+    const ageTensZeroH = {1:'じゅっさい',2:'にじゅっさい',3:'さんじゅっさい',4:'よんじゅっさい',5:'ごじゅっさい',6:'ろくじゅっさい',7:'ななじゅっさい',8:'はちじゅっさい',9:'きゅうじゅっさい'};
+
+    const classR = {1:'ichi',2:'ni',3:'san',4:'yo',5:'go',6:'roku',7:'shichi',8:'hachi',9:'kyuu'};
+    const classH = {1:'いち',2:'に',3:'さん',4:'よ',5:'ご',6:'ろく',7:'しち',8:'はち',9:'きゅう'};
+
+    function minutesR(m) {
+      if (m === 0) return '';
+      const t = Math.floor(m / 10), u = m % 10;
+      if (u === 0) return minTensZeroR[t];
+      return minTensPrefixR[t] + minOnesR[u];
+    }
+    function minutesH(m) {
+      if (m === 0) return '';
+      const t = Math.floor(m / 10), u = m % 10;
+      if (u === 0) return minTensZeroH[t];
+      return minTensPrefixH[t] + minOnesH[u];
+    }
+
+    function ageR(n) {
+      if (n === 20) return ['hatachi', 'nijussai'];
+      const t = Math.floor(n / 10), u = n % 10;
+      if (u === 0) return [ageTensZeroR[t]];
+      if (t === 0) return [ageOnesR[u]];
+      return [tensPrefixR[t] + ageOnesR[u]];
+    }
+    function ageH(n) {
+      if (n === 20) return 'はたち';
+      const t = Math.floor(n / 10), u = n % 10;
+      if (u === 0) return ageTensZeroH[t];
+      if (t === 0) return ageOnesH[u];
+      return tensPrefixH[t] + ageOnesH[u];
+    }
+
+    function classYearR(n) { return classR[n] + 'nensei'; }
+    function classYearH(n) { return classH[n] + 'ねんせい'; }
+
+    const counters = {
+      hours: {
+        label: 'hours',
+        min: 1, max: 12,
+        useAmPm: true,
+        randRange() { return Math.floor(Math.random() * 12) + 1; },
+        toRomaji(h, ap) {
+          const mm = this._m;
+          const prefix = ap ? ampmR[ap] + ' ' : '';
+          const answers = new Set();
+          answers.add(prefix + hourR[h] + minutesR(mm));
+          if (mm === 30) answers.add(prefix + hourR[h] + 'han');
+          return [...answers];
+        },
+        toHiragana(h, ap) {
+          const mm = this._m;
+          const prefix = ap ? ampmH[ap] : '';
+          return prefix + hourH[h] + minutesH(mm) + (mm === 30 ? '（はん）' : '');
+        },
+        displayValue(h, ap) {
+          const mm = String(this._m).padStart(2, '0');
+          const badge = ap ? '<span class="ampm-badge">' + ap.toUpperCase() + '</span>' : '';
+          return { html: '<span>' + h + ':' + mm + '</span>' + badge, unit: '' };
+        },
+        jpAnswers(h, ap) {
+          const mm = String(this._m).padStart(2, '0');
+          const base = h + ':' + mm;
+          return ap ? [ap + base, base + ap] : [base];
+        },
+        jpDisplay(h, ap) {
+          const mm = String(this._m).padStart(2, '0');
+          return ap ? ap.toUpperCase() + ' ' + h + ':' + mm : h + ':' + mm;
+        },
+        placeholderVal(ap) { return ap ? 'e.g. gozen ichiji sanjuugofun' : 'e.g. ichiji sanjuugofun'; },
+        placeholderJp(ap) { return ap ? 'e.g. AM 1:35' : 'e.g. 1:35'; },
+        promptVal: 'What time is this in Japanese?',
+        promptJp: 'What time is this?'
+      },
+      age: {
+        label: 'age',
+        min: 1, max: 99,
+        useAmPm: false,
+        randRange() { return Math.floor(Math.random() * 99) + 1; },
+        toRomaji(n) { return ageR(n); },
+        toHiragana(n) { return ageH(n); },
+        displayValue(n) { return { html: '<span>' + n + '</span>', unit: 'years old' }; },
+        jpAnswers(n) { return [String(n)]; },
+        jpDisplay(n) { return String(n); },
+        placeholderVal() { return 'e.g. nijussai'; },
+        placeholderJp() { return 'type the age…'; },
+        promptVal: 'How do you say this age in Japanese?',
+        promptJp: 'How old is this?'
+      },
+      class: {
+        label: 'class year',
+        min: 1, max: 6,
+        useAmPm: false,
+        randRange() { return Math.floor(Math.random() * 6) + 1; },
+        toRomaji(n) { return [classYearR(n)]; },
+        toHiragana(n) { return classYearH(n); },
+        displayValue(n) { return { html: '<span>' + n + '</span>', unit: 'grade / year' }; },
+        jpAnswers(n) { return [String(n)]; },
+        jpDisplay(n) { return String(n); },
+        placeholderVal() { return 'e.g. sannensei'; },
+        placeholderJp() { return 'type the year…'; },
+        promptVal: 'What grade/year is this in Japanese?',
+        promptJp: 'What year is this?'
+      }
+    };
+
+    let counterId = 'hours';
+    let mode = 'val';
+    let curVal = 1, curAp = null;
+    let correct = 0, wrong = 0, streak = 0;
+    let answered = false;
+
+    function activeCounter() { return counters[counterId]; }
+
+    function setCounter() {
+      counterId = document.getElementById('counterSelect').value;
+      const c = activeCounter();
+      document.getElementById('modeVal').textContent = c.label[0].toUpperCase() + c.label.slice(1) + ' → Japanese';
+      document.getElementById('modeJp').textContent = 'Japanese → ' + c.label[0].toUpperCase() + c.label.slice(1);
+      nextQuestion();
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('modeVal').classList.toggle('active', m === 'val');
+      document.getElementById('modeJp').classList.toggle('active', m === 'jp');
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      const c = activeCounter();
+      curVal = c.randRange();
+      curAp = c.useAmPm ? (Math.random() < 0.5 ? null : (Math.random() < 0.5 ? 'am' : 'pm')) : null;
+      if (c === counters.hours) c._m = Math.floor(Math.random() * 60);
+
+      answered = false;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('acceptedLabel').textContent = '';
+      document.getElementById('subHint').textContent = '';
+      document.getElementById('answerInput').value = '';
+      document.getElementById('answerInput').disabled = false;
+
+      if (mode === 'val') {
+        document.getElementById('promptLabel').textContent = c.promptVal;
+        const d = c.displayValue(curVal, curAp);
+        document.getElementById('numDisplay').innerHTML = d.html;
+        document.getElementById('unitLabel').textContent = d.unit;
+        document.getElementById('answerInput').placeholder = c.placeholderVal(curAp);
+      } else {
+        document.getElementById('promptLabel').textContent = c.promptJp;
+        document.getElementById('numDisplay').textContent = c.toHiragana(curVal, curAp);
+        document.getElementById('unitLabel').textContent = '';
+        document.getElementById('answerInput').placeholder = c.placeholderJp(curAp);
+      }
+      document.getElementById('answerInput').focus();
+    }
+
+    function normalize(s) {
+      return s.trim().toLowerCase().replace(/\s+/g, '');
+    }
+
+    function checkAnswer() {
+      if (answered) { nextQuestion(); return; }
+      const raw = document.getElementById('answerInput').value;
+      if (!raw.trim()) return;
+      answered = true;
+      document.getElementById('answerInput').disabled = true;
+
+      const c = activeCounter();
+      let isCorrect = false;
+
+      if (mode === 'val') {
+        const answers = c.toRomaji(curVal, curAp);
+        isCorrect = answers.some(a => normalize(a) === normalize(raw));
+        document.getElementById('subHint').textContent = c.toHiragana(curVal, curAp);
+        if (!isCorrect) document.getElementById('acceptedLabel').textContent = 'Accepted: ' + answers.join(' / ');
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + answers[0];
+      } else {
+        const answers = c.jpAnswers(curVal, curAp);
+        isCorrect = answers.some(a => normalize(a) === normalize(raw));
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + c.jpDisplay(curVal, curAp);
+      }
+
+      document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      if (isCorrect) { correct++; streak++; } else { wrong++; streak = 0; }
+      document.getElementById('statCorrect').textContent = correct;
+      document.getElementById('statWrong').textContent = wrong;
+      document.getElementById('statStreak').textContent = streak;
+    }
+
+    document.getElementById('counterSelect').addEventListener('change', setCounter);
+    document.getElementById('answerInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    setCounter();
+  </script>
+</body>
+</html>
