@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Japanese Numbers Quiz</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f0;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      color: #1a1a18;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      color: #1a1a18;
+    }
+
+    .home-link {
+      display: inline-block;
+      font-size: 13px;
+      color: #1a56db;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+    }
+
+    .home-link:hover { text-decoration: underline; }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    select {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #f5f5f0;
+      color: #1a1a18;
+      cursor: pointer;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #f5f5f0;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .mode-btn.active {
+      background: #e8f0fe;
+      color: #1a56db;
+      border-color: #a4c0f4;
+    }
+
+    .card {
+      background: #f9f9f6;
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .prompt-label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .number-display {
+      font-size: 56px;
+      font-weight: 500;
+      line-height: 1.1;
+      color: #1a1a18;
+    }
+
+    .sub-hint {
+      font-size: 20px;
+      color: #555;
+      min-height: 28px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      flex: 1;
+      font-size: 18px;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #d0d0c8;
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a18;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #1a56db; }
+
+    button {
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid #d0d0c8;
+      background: #fff;
+      color: #1a1a18;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #f0f0ea; }
+
+    .next-btn {
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .feedback {
+      min-height: 32px;
+      font-size: 15px;
+      font-weight: 500;
+      text-align: center;
+      border-radius: 8px;
+      padding: 6px 0;
+      margin-bottom: 4px;
+    }
+
+    .feedback.correct { color: #166534; background: #dcfce7; }
+    .feedback.wrong   { color: #991b1b; background: #fee2e2; }
+
+    .accepted {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      min-height: 18px;
+      margin-bottom: 2px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      margin-top: 1.5rem;
+    }
+
+    .stat {
+      flex: 1;
+      background: #f5f5f0;
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a18; color: #f0f0ea; }
+      .container { background: #2a2a26; box-shadow: none; }
+      .card { background: #222220; }
+      .number-display { color: #f0f0ea; }
+      .sub-hint { color: #aaa; }
+      select, button, input[type="text"], input[type="number"] {
+        background: #333330; border-color: #444440; color: #f0f0ea;
+      }
+      button:hover { background: #3a3a36; }
+      .mode-btn { background: #333330; color: #aaa; border-color: #444440; }
+      .mode-btn.active { background: #1e3a6e; color: #93b4f5; border-color: #2d5299; }
+      .stat { background: #222220; }
+      h1 { color: #f0f0ea; }
+      .home-link { color: #93b4f5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="home-link" href="./">← Home</a>
+    <h1>Japanese numbers quiz 🎌</h1>
+
+    <div class="controls">
+      <select id="rangeSelect">
+        <option value="10">1 – 10</option>
+        <option value="99" selected>1 – 99</option>
+        <option value="999">1 – 999</option>
+        <option value="9999">1 – 9999</option>
+      </select>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeNum" onclick="setMode('num')">Number → Japanese</button>
+        <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese → Number</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="prompt-label" id="promptLabel">How do you read this number in Japanese?</div>
+      <div class="number-display" id="numDisplay">—</div>
+      <div class="sub-hint" id="subHint"></div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="answerInput" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" />
+      <button onclick="checkAnswer()">Check</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="accepted" id="acceptedLabel"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next →</button>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
+      <div class="stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">wrong</div></div>
+      <div class="stat"><div class="stat-num" id="statStreak">0</div><div class="stat-label">streak</div></div>
+    </div>
+  </div>
+
+  <script>
+    const onesR = ['','ichi','ni','san','shi','go','roku','shichi','hachi','ku'];
+    const onesH = ['','いち','に','さん','し','ご','ろく','しち','はち','く'];
+    const hyakuR = {1:'hyaku',2:'nihyaku',3:'sanbyaku',4:'yonhyaku',5:'gohyaku',6:'roppyaku',7:'nanahyaku',8:'happyaku',9:'kyuuhyaku'};
+    const hyakuH = {1:'ひゃく',2:'にひゃく',3:'さんびゃく',4:'よんひゃく',5:'ごひゃく',6:'ろっぴゃく',7:'ななひゃく',8:'はっぴゃく',9:'きゅうひゃく'};
+    const senR = {1:'sen',2:'nisen',3:'sanzen',4:'yonsen',5:'gosen',6:'rokusen',7:'nanasen',8:'hassen',9:'kyuusen'};
+    const senH = {1:'せん',2:'にせん',3:'さんぜん',4:'よんせん',5:'ごせん',6:'ろくせん',7:'ななせん',8:'はっせん',9:'きゅうせん'};
+
+    function getOnesR(u) {
+      if (u === 4) return ['shi','yon'];
+      if (u === 7) return ['shichi','nana'];
+      if (u === 9) return ['ku','kyuu'];
+      return [onesR[u]];
+    }
+
+    function getTensR(t) {
+      if (t === 4) return 'yon';
+      if (t === 7) return 'nana';
+      if (t === 9) return 'kyuu';
+      return onesR[t];
+    }
+
+    function toRomaji(n) {
+      const results = new Set();
+      const th = Math.floor(n / 1000); const rem3 = n % 1000;
+      const h = Math.floor(rem3 / 100); const rem2 = rem3 % 100;
+      const t = Math.floor(rem2 / 10); const u = rem2 % 10;
+      const thPart = th ? senR[th] : '';
+      const hPart = h ? hyakuR[h] : '';
+      const tPart = t === 1 ? 'juu' : (t > 1 ? getTensR(t) + 'juu' : '');
+      for (const uP of (u ? getOnesR(u) : [''])) results.add(thPart + hPart + tPart + uP);
+      return [...results];
+    }
+
+    function toHiragana(n) {
+      const th = Math.floor(n / 1000); const rem3 = n % 1000;
+      const h = Math.floor(rem3 / 100); const rem2 = rem3 % 100;
+      const t = Math.floor(rem2 / 10); const u = rem2 % 10;
+      const altH = { 4: 'よん', 7: 'なな', 9: 'きゅう' };
+      let s = '';
+      if (th) s += senH[th];
+      if (h) s += hyakuH[h];
+      if (t === 1) s += 'じゅう';
+      else if (t > 1) s += (altH[t] || onesH[t]) + 'じゅう';
+      if (u) s += altH[u] || onesH[u];
+      return s;
+    }
+
+    let mode = 'num';
+    let current = 0;
+    let correct = 0, wrong = 0, streak = 0;
+    let answered = false;
+
+    function randNum() {
+      const max = parseInt(document.getElementById('rangeSelect').value);
+      return Math.floor(Math.random() * max) + 1;
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('modeNum').classList.toggle('active', m === 'num');
+      document.getElementById('modeJp').classList.toggle('active', m === 'jp');
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      current = randNum();
+      answered = false;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('acceptedLabel').textContent = '';
+      document.getElementById('subHint').textContent = '';
+      document.getElementById('answerInput').value = '';
+      document.getElementById('answerInput').disabled = false;
+
+      if (mode === 'num') {
+        document.getElementById('promptLabel').textContent = 'How do you read this number in Japanese?';
+        document.getElementById('numDisplay').textContent = current;
+        document.getElementById('answerInput').placeholder = 'e.g. juuichi…';
+        document.getElementById('answerInput').inputMode = 'text';
+      } else {
+        document.getElementById('promptLabel').textContent = 'What number is this?';
+        document.getElementById('numDisplay').textContent = toHiragana(current);
+        document.getElementById('answerInput').placeholder = 'type the number…';
+        document.getElementById('answerInput').inputMode = 'numeric';
+      }
+
+      document.getElementById('answerInput').focus();
+    }
+
+    function normalize(s) {
+      return s.trim().toLowerCase().replace(/\s+/g, '').replace(/ō/g, 'oo').replace(/ū/g, 'uu');
+    }
+
+    function checkAnswer() {
+      if (answered) { nextQuestion(); return; }
+      const raw = document.getElementById('answerInput').value;
+      if (!raw.trim()) return;
+
+      answered = true;
+      document.getElementById('answerInput').disabled = true;
+
+      let isCorrect = false;
+
+      if (mode === 'num') {
+        const answers = toRomaji(current);
+        isCorrect = answers.some(a => normalize(a) === normalize(raw));
+        document.getElementById('subHint').textContent = toHiragana(current);
+        if (!isCorrect) {
+          document.getElementById('acceptedLabel').textContent = 'Accepted: ' + answers.join(' / ');
+        }
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + answers[0];
+      } else {
+        isCorrect = parseInt(raw.trim()) === current;
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + current;
+      }
+
+      document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      if (isCorrect) { correct++; streak++; } else { wrong++; streak = 0; }
+      document.getElementById('statCorrect').textContent = correct;
+      document.getElementById('statWrong').textContent = wrong;
+      document.getElementById('statStreak').textContent = streak;
+    }
+
+    document.getElementById('rangeSelect').addEventListener('change', nextQuestion);
+    document.getElementById('answerInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    nextQuestion();
+  </script>
+</body>
+</html>
