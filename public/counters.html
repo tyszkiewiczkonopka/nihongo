@@ -5,331 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nihongo Dojo — Counters</title>
   <link rel="icon" type="image/png" href="favicon.png" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f5f5f0;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      color: #1a1a18;
-    }
-
-    .container {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-
-    h1 {
-      font-size: 18px;
-      font-weight: 500;
-      margin-bottom: 1.25rem;
-      color: #1a1a18;
-    }
-
-    .home-link {
-      display: inline-block;
-      font-size: 13px;
-      color: #1a56db;
-      text-decoration: none;
-      margin-bottom: 0.75rem;
-    }
-
-    .home-link:hover { text-decoration: underline; }
-
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    select {
-      font-size: 13px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid #d0d0c8;
-      background: #f5f5f0;
-      color: #1a1a18;
-      cursor: pointer;
-    }
-
-    .mode-toggle {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-
-    .mode-btn {
-      font-size: 12px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid #d0d0c8;
-      background: #f5f5f0;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .mode-btn.active {
-      background: #e8f0fe;
-      color: #1a56db;
-      border-color: #a4c0f4;
-    }
-
-    .card {
-      background: #f9f9f6;
-      border-radius: 12px;
-      padding: 2rem 1rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      min-height: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .prompt-label {
-      font-size: 12px;
-      color: #888;
-    }
-
-    .number-display {
-      font-size: 56px;
-      font-weight: 500;
-      line-height: 1.1;
-      color: #1a1a18;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .ampm-badge {
-      font-size: 16px;
-      font-weight: 500;
-      color: #1a56db;
-      background: #e8f0fe;
-      padding: 3px 10px;
-      border-radius: 8px;
-    }
-
-    .unit-label {
-      font-size: 13px;
-      color: #888;
-    }
-
-    .sub-hint {
-      font-size: 20px;
-      color: #555;
-      min-height: 28px;
-    }
-
-    .input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 0.75rem;
-    }
-
-    input[type="text"] {
-      flex: 1;
-      font-size: 18px;
-      text-align: center;
-      padding: 10px;
-      border: 1px solid #d0d0c8;
-      border-radius: 8px;
-      background: #fff;
-      color: #1a1a18;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    input:focus { border-color: #1a56db; }
-
-    button {
-      font-size: 14px;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: 1px solid #d0d0c8;
-      background: #fff;
-      color: #1a1a18;
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-
-    button:hover { background: #f0f0ea; }
-
-    .next-btn {
-      width: 100%;
-      margin-top: 6px;
-    }
-
-    .feedback {
-      min-height: 32px;
-      font-size: 15px;
-      font-weight: 500;
-      text-align: center;
-      border-radius: 8px;
-      padding: 6px 0;
-      margin-bottom: 4px;
-    }
-
-    .feedback.correct { color: #166534; background: #dcfce7; }
-    .feedback.wrong   { color: #991b1b; background: #fee2e2; }
-
-    .accepted {
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      min-height: 18px;
-      margin-bottom: 2px;
-    }
-
-    .stats {
-      display: flex;
-      gap: 10px;
-      margin-top: 1.5rem;
-    }
-
-    .stat {
-      flex: 1;
-      background: #f5f5f0;
-      border-radius: 8px;
-      padding: 0.75rem;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-size: 22px;
-      font-weight: 500;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: #888;
-      margin-top: 2px;
-    }
-
-    .hint-panel {
-      margin-top: 1rem;
-    }
-
-    .hint-panel > summary {
-      cursor: pointer;
-      font-size: 13px;
-      color: #1a56db;
-    }
-
-    .hint-topics {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .hint-topic {
-      display: block;
-      border: 1px solid #d0d0c8;
-      border-radius: 8px;
-      padding: 10px 12px;
-      background: #f9f9f6;
-      color: #1a56db;
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-
-    .hint-topic:hover { background: #f0f0ea; }
-
-    @media (prefers-color-scheme: dark) {
-      body { background: #1a1a18; color: #f0f0ea; }
-      .container { background: #2a2a26; box-shadow: none; }
-      .card { background: #222220; }
-      .number-display { color: #f0f0ea; }
-      .sub-hint { color: #aaa; }
-      select, button, input[type="text"] {
-        background: #333330; border-color: #444440; color: #f0f0ea;
-      }
-      button:hover { background: #3a3a36; }
-      .mode-btn { background: #333330; color: #aaa; border-color: #444440; }
-      .mode-btn.active { background: #1e3a6e; color: #93b4f5; border-color: #2d5299; }
-      .ampm-badge { background: #1e3a6e; color: #93b4f5; }
-      .stat { background: #222220; }
-      h1 { color: #f0f0ea; }
-      .home-link { color: #93b4f5; }
-      .hint-panel > summary { color: #93b4f5; }
-      .hint-topic { background: #222220; border-color: #444440; color: #93b4f5; }
-      .hint-topic:hover { background: #2a2a26; }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
 </head>
 <body>
-  <div class="container">
-    <a class="home-link" href="./">← Home</a>
-    <h1>Nihongo Dojo — Counters quiz 🔢</h1>
+  <div class="wrap">
+    <div class="container">
+      <header class="quiz-header">
+        <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
+        <a class="hint-link" id="hintLink" target="_blank" rel="noopener" aria-label="Reference notes" title="Reference notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2V5Z" />
+            <path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2V5Z" />
+          </svg>
+        </a>
+      </header>
+      <nav class="quiz-tabs">
+        <a class="quiz-tab" href="numbers">Numbers</a>
+        <a class="quiz-tab active" href="counters">Counters</a>
+      </nav>
 
-    <div class="controls">
-      <select id="counterSelect">
-        <option value="hours">Hours</option>
-        <option value="age">Age (歳)</option>
-        <option value="class">Class year (年生)</option>
-      </select>
-    </div>
-    <div class="mode-toggle">
-      <button class="mode-btn active" id="modeVal" onclick="setMode('val')">→ Japanese</button>
-      <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese →</button>
-    </div>
+      <div class="controls">
+        <div class="mode-toggle">
+          <button class="mode-btn counter-btn active" data-counter="hours" onclick="setCounter('hours')">Hours</button>
+          <button class="mode-btn counter-btn" data-counter="age" onclick="setCounter('age')">Age 歳</button>
+          <button class="mode-btn counter-btn" data-counter="class" onclick="setCounter('class')">Class 年生</button>
+        </div>
+      </div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeVal" onclick="setMode('val')">→ Japanese</button>
+        <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese →</button>
+      </div>
 
-    <div class="card">
-      <div class="prompt-label" id="promptLabel">How do you say this in Japanese?</div>
-      <div class="number-display" id="numDisplay">—</div>
-      <div class="unit-label" id="unitLabel"></div>
-      <div class="sub-hint" id="subHint"></div>
-    </div>
+      <div class="card">
+        <div class="prompt-label" id="promptLabel">How do you say this in Japanese?</div>
+        <div class="number-display" id="numDisplay">—</div>
+        <div class="unit-label" id="unitLabel"></div>
+        <div class="sub-hint" id="subHint"></div>
+      </div>
 
-    <div class="input-row">
-      <input type="text" id="answerInput" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-      <button onclick="checkAnswer()">Check</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-    <div class="accepted" id="acceptedLabel"></div>
-    <button class="next-btn" onclick="nextQuestion()">Next →</button>
+      <div class="input-row">
+        <input type="text" id="answerInput" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <button class="btn-primary check-btn" onclick="checkAnswer()">Check</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="accepted" id="acceptedLabel"></div>
+      <button class="next-btn btn-primary" onclick="nextQuestion()">Next →</button>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
-      <div class="stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">wrong</div></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
+        <div class="stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">wrong</div></div>
+      </div>
     </div>
-
-    <details class="hint-panel">
-      <summary>💡 Hints &amp; notes</summary>
-      <div class="hint-topics" id="hintTopics"></div>
-    </details>
   </div>
 
   <script src="notes.js"></script>
   <script>
-    NOTES.forEach(note => {
-      const link = document.createElement('a');
-      link.className = 'hint-topic';
-      link.href = note.href;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = note.title;
-      document.getElementById('hintTopics').appendChild(link);
-    });
+    const note = NOTES.find(n => n.id === 'counters-reference');
+    document.getElementById('hintLink').href = note.href;
 
     const tensPrefixR = {0:'',1:'juu',2:'nijuu',3:'sanjuu',4:'yonjuu',5:'gojuu',6:'rokujuu',7:'nanajuu',8:'hachijuu',9:'kyuujuu'};
 
@@ -456,8 +191,11 @@
 
     function activeCounter() { return counters[counterId]; }
 
-    function setCounter() {
-      counterId = document.getElementById('counterSelect').value;
+    function setCounter(id) {
+      counterId = id;
+      document.querySelectorAll('.counter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.counter === id);
+      });
       const c = activeCounter();
       document.getElementById('modeVal').textContent = c.label[0].toUpperCase() + c.label.slice(1) + ' → Japanese';
       document.getElementById('modeJp').textContent = 'Japanese → ' + c.label[0].toUpperCase() + c.label.slice(1);
@@ -533,12 +271,11 @@
       document.getElementById('statWrong').textContent = wrong;
     }
 
-    document.getElementById('counterSelect').addEventListener('change', setCounter);
     document.getElementById('answerInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') checkAnswer();
     });
 
-    setCounter();
+    setCounter('hours');
   </script>
 </body>
 </html>
