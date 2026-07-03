@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>助数詞 — Counter Irregularities</title>
+<style>
+  :root{
+    --paper:#EDE7D9;
+    --paper-dark:#E1D9C6;
+    --ink:#2B2B29;
+    --ink-soft:#5C574E;
+    --shu:#C1440E;       /* traditional vermillion / red-pen ink */
+    --shu-soft:#E8DCC8;
+    --line:#C9BFA8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+    padding:20px 14px 60px;
+  }
+  h1{
+    font-size:1.4rem;
+    font-weight:700;
+    margin:0 0 2px;
+    letter-spacing:0.02em;
+  }
+  .sub{
+    color:var(--ink-soft);
+    font-size:0.85rem;
+    margin:0 0 22px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:16px;
+  }
+  .stamp-key{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    font-size:0.78rem;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .key-item{display:flex;align-items:center;gap:6px;}
+  .swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+  .swatch.reg{background:var(--paper-dark);border:1px solid var(--line);}
+  .swatch.irr{background:var(--shu);}
+
+  section{margin-bottom:34px;}
+  h2{
+    font-size:1.05rem;
+    margin:0 0 4px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  h2 .jp{font-size:1.2rem;}
+  .desc{font-size:0.82rem;color:var(--ink-soft);margin:0 0 14px;line-height:1.4;}
+
+  .grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  table{border-collapse:collapse;min-width:640px;width:100%;}
+  th,td{padding:0;text-align:center;}
+  th{
+    font-size:0.72rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    padding:4px 0 8px;
+  }
+  th.row-label, td.row-label{
+    text-align:left;
+    padding-left:4px;
+    font-size:0.85rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  td.cell{
+    padding:3px;
+  }
+  .cellbox{
+    border-radius:6px;
+    padding:6px 2px;
+    font-size:0.68rem;
+    line-height:1.35;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+  }
+  .cellbox.irregular{
+    background:var(--shu-soft);
+    border:1.5px solid var(--shu);
+    position:relative;
+  }
+  .cellbox.irregular::after{
+    content:"注";
+    position:absolute;
+    top:-7px;
+    right:-4px;
+    background:var(--shu);
+    color:var(--paper);
+    font-size:0.55rem;
+    width:14px;height:14px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+  }
+  .reading{font-weight:700;display:block;color:var(--ink);}
+  .cellbox.irregular .reading{color:var(--shu);}
+  .romaji{display:block;font-size:0.62rem;color:var(--ink-soft);}
+  .cellbox.irregular .romaji{color:var(--shu);opacity:0.85;}
+
+  .note{
+    margin-top:12px;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    background:var(--paper-dark);
+    border-left:3px solid var(--shu);
+    padding:8px 10px;
+    border-radius:0 6px 6px 0;
+  }
+
+  /* Flowchart section */
+  .flow-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .flow-row{
+    display:flex;
+    align-items:stretch;
+    gap:10px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+  }
+  .flow-nums{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:2px;
+    min-width:58px;
+  }
+  .flow-nums .n{
+    font-weight:700;
+    font-size:0.85rem;
+  }
+  .flow-nums .end{
+    font-size:0.68rem;
+    color:var(--ink-soft);
+  }
+  .arrow{
+    display:flex;
+    align-items:center;
+    color:var(--ink-soft);
+    font-size:1.1rem;
+    padding:0 2px;
+  }
+  .flow-result{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:3px;
+  }
+  .flow-row.irregular{
+    border-color:var(--shu);
+    background:var(--shu-soft);
+  }
+  .flow-row.irregular .flow-result .rule{color:var(--shu);font-weight:700;}
+  .rule{font-size:0.82rem;font-weight:600;}
+  .examples{font-size:0.72rem;color:var(--ink-soft);}
+  .flow-row.irregular .examples{color:var(--shu);opacity:0.9;}
+
+  footer{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:30px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+</style>
+</head>
+<body>
+
+<h1>助数詞の不規則 <span style="font-weight:400;font-size:1rem;">Counter Irregularities</span></h1>
+<p class="sub">時 / 分 / 歳 / 年生 — regulars in ink, exceptions marked in red like a teacher's correction</p>
+
+<div class="stamp-key">
+  <div class="key-item"><div class="swatch reg"></div> regular reading</div>
+  <div class="key-item"><div class="swatch irr"></div> irregular — sound changes</div>
+</div>
+
+<section>
+  <h2><span class="jp">①</span> Heatmap grid — four counters, 1–10</h2>
+  <p class="desc">Scroll sideways on mobile. Red cells are where the plain number reading gets bent by euphony — mostly clustering on 1, 4, 7, 9, and multiples that trigger a small つ (gemination).</p>
+
+  <div class="grid-scroll">
+  <table>
+    <tr>
+      <th class="row-label"></th>
+      <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+    </tr>
+
+    <tr>
+      <td class="row-label">時<br><span style="font-weight:400;font-size:0.68rem;">hour</span></td>
+      <td class="cell"><div class="cellbox"><span class="reading">一時</span><span class="romaji">ichiji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">二時</span><span class="romaji">niji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">三時</span><span class="romaji">sanji</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">四時</span><span class="romaji">yoji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">五時</span><span class="romaji">goji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">六時</span><span class="romaji">rokuji</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">七時</span><span class="romaji">shichiji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">八時</span><span class="romaji">hachiji</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">九時</span><span class="romaji">kuji</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">十時</span><span class="romaji">juuji</span></div></td>
+    </tr>
+
+    <tr>
+      <td class="row-label">分<br><span style="font-weight:400;font-size:0.68rem;">minute</span></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">一分</span><span class="romaji">ippun</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">二分</span><span class="romaji">nifun</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">三分</span><span class="romaji">sanpun</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">四分</span><span class="romaji">yonpun</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">五分</span><span class="romaji">gofun</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">六分</span><span class="romaji">roppun</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">七分</span><span class="romaji">nanafun</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">八分</span><span class="romaji">happun</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">九分</span><span class="romaji">kyuufun</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">十分</span><span class="romaji">juppun</span></div></td>
+    </tr>
+
+    <tr>
+      <td class="row-label">歳<br><span style="font-weight:400;font-size:0.68rem;">age</span></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">一歳</span><span class="romaji">issai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">二歳</span><span class="romaji">nisai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">三歳</span><span class="romaji">sansai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">四歳</span><span class="romaji">yonsai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">五歳</span><span class="romaji">gosai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">六歳</span><span class="romaji">rokusai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">七歳</span><span class="romaji">nanasai</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">八歳</span><span class="romaji">hassai</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">九歳</span><span class="romaji">kyuusai</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">十歳</span><span class="romaji">jussai</span></div></td>
+    </tr>
+
+    <tr>
+      <td class="row-label">年生<br><span style="font-weight:400;font-size:0.68rem;">grade</span></td>
+      <td class="cell"><div class="cellbox"><span class="reading">一年生</span><span class="romaji">ichinensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">二年生</span><span class="romaji">ninensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">三年生</span><span class="romaji">sannensei</span></div></td>
+      <td class="cell"><div class="cellbox irregular"><span class="reading">四年生</span><span class="romaji">yonensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">五年生</span><span class="romaji">gonensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">六年生</span><span class="romaji">rokunensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">七年生</span><span class="romaji">nananensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">八年生</span><span class="romaji">hachinensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">九年生</span><span class="romaji">kyuunensei</span></div></td>
+      <td class="cell"><div class="cellbox"><span class="reading">十年生</span><span class="romaji">juunensei</span></div></td>
+    </tr>
+  </table>
+  </div>
+
+  <p class="note">20歳 (age 20) isn't on this grid because it breaks the pattern completely: <strong>はたち / hatachi</strong>. Not a number+counter combo at all — a standalone word, same category as your keizai/kyouiku sound-anchors. Worth its own flashcard.</p>
+</section>
+
+<section>
+  <h2><span class="jp">②</span> Why 分 (minutes) misbehaves</h2>
+  <p class="desc">The minute-counter isn't random — it follows a euphony rule based on how the number's last sound meets ふん. Grouping by trigger sound turns six "random" exceptions into two rules.</p>
+
+  <div class="flow-wrap">
+
+    <div class="flow-row irregular">
+      <div class="flow-nums">
+        <span class="n">1, 6, 8, 10</span>
+        <span class="end">end in a "stop" sound</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-result">
+        <span class="rule">ふん hardens to っぷん (geminate + p)</span>
+        <span class="examples">ippun · roppun · happun · juppun</span>
+      </div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-nums">
+        <span class="n">2, 5, 7, 9</span>
+        <span class="end">end in a vowel-ish sound</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-result">
+        <span class="rule">ふん stays plain</span>
+        <span class="examples">nifun · gofun · nanafun · kyuufun</span>
+      </div>
+    </div>
+
+    <div class="flow-row irregular">
+      <div class="flow-nums">
+        <span class="n">3</span>
+        <span class="end">ん-adjacent</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-result">
+        <span class="rule">ふん shifts to ぷん (no gemination, just p)</span>
+        <span class="examples">sanpun</span>
+      </div>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-nums">
+        <span class="n">4</span>
+        <span class="end">already ends in ん</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-result">
+        <span class="rule">no change needed</span>
+        <span class="examples">yonpun</span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="note">Same っぷ-hardening shows up in 歳: issai, hassai, jussai are the same three "stop-sound" numbers (1, 8, 10) doing the same thing — plus 6 in 時 territory doesn't apply there, but the 1/6/8/10 cluster is worth remembering as a set, not four separate exceptions.</p>
+</section>
+
+<footer>時 · 分 · 歳 · 年生 — the red marks are the ones worth flashcarding first</footer>
+
+</body>
+</html>
