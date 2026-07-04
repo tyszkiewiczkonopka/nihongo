@@ -316,26 +316,33 @@ button:hover { background: var(--paper-alt); }
 
 .btn-primary:hover { filter: brightness(0.92); background: var(--hanko); }
 
-.next-btn {
-  width: 100%;
-  margin-top: 6px;
-  background: transparent;
-  border-color: var(--hanko);
-  color: var(--hanko);
-  font-weight: 600;
-}
-
-.next-btn:hover { background: var(--paper-alt); }
-
 .check-btn { width: 100%; }
 
 /* ---------- feedback ---------- */
+/* Collapsed by default (no reserved gap between Check and Next) and
+   expands in only once there's something to say. A hard cut from 0 to
+   full height would still read as a jump, so it eases open instead —
+   quiet motion, not a static blank space standing in for it. */
 .feedback {
-  min-height: 32px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
   font-size: 15px;
   font-weight: 500;
   text-align: center;
   border-radius: 8px;
+  padding: 0 0;
+  margin-bottom: 0;
+  transition: max-height 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1),
+              padding 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+              margin-bottom 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.feedback.correct,
+.feedback.wrong {
+  max-height: 40px;
+  opacity: 1;
   padding: 6px 0;
   margin-bottom: 4px;
 }
@@ -343,34 +350,36 @@ button:hover { background: var(--paper-alt); }
 .feedback.correct { color: var(--correct); background: var(--correct-bg); }
 .feedback.wrong   { color: var(--wrong); background: var(--wrong-bg); }
 
+@media (prefers-reduced-motion: reduce) {
+  .feedback { transition: none; }
+}
+
 /* ---------- stats ---------- */
 .stats {
   display: flex;
-  gap: 10px;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
   margin-top: 1.5rem;
 }
 
-.stat {
-  flex: 1;
-  background: var(--paper-alt);
-  border-radius: 8px;
-  padding: 0.75rem;
-  text-align: center;
-}
+.stat { display: inline-flex; align-items: baseline; gap: 5px; }
+
+.stats-divider { color: var(--line); font-size: 13px; }
 
 .stat-num {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 600;
+  color: var(--ink);
 }
 
 .stat-label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin-top: 3px;
 }
 
 /* ---------- homepage menu ---------- */
@@ -466,7 +475,6 @@ button:hover { background: var(--paper-alt); }
   .quiz-container > .card,
   .quiz-container > .input-row,
   .quiz-container > .feedback,
-  .quiz-container > .next-btn,
   .quiz-container > .stats {
     grid-column: 2;
   }

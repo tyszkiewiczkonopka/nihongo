@@ -47,14 +47,14 @@
 
       <div class="input-row">
         <input type="text" id="answerInput" placeholder="type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-        <button class="btn-primary check-btn" onclick="checkAnswer()">Check</button>
+        <button class="btn-primary check-btn" id="checkBtn" onclick="checkAnswer()">Check</button>
       </div>
       <div class="feedback" id="feedback"></div>
-      <button class="next-btn" onclick="nextQuestion()">Next →</button>
 
       <div class="stats">
-        <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
-        <div class="stat"><div class="stat-num" id="statWrong">0</div><div class="stat-label">wrong</div></div>
+        <span class="stat"><span class="stat-num" id="statCorrect">0</span> <span class="stat-label">correct</span></span>
+        <span class="stats-divider">·</span>
+        <span class="stat"><span class="stat-num" id="statWrong">0</span> <span class="stat-label">wrong</span></span>
       </div>
     </div>
   </div>
@@ -211,6 +211,7 @@
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').disabled = false;
       document.getElementById('answerInput').readOnly = false;
+      document.getElementById('checkBtn').textContent = 'Check';
 
       if (mode === 'val') {
         const d = c.displayValue(curVal, curAp);
@@ -232,9 +233,9 @@
     function checkAnswer() {
       if (answered) { nextQuestion(); return; }
       const raw = document.getElementById('answerInput').value;
-      if (!raw.trim()) return;
       answered = true;
       document.getElementById('answerInput').readOnly = true;
+      document.getElementById('checkBtn').textContent = 'Next →';
 
       const c = activeCounter();
       let isCorrect = false;

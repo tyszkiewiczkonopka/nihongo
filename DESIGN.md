@@ -190,14 +190,22 @@ here — if a future counter type needs disambiguation the toggle/pill labels ar
 it, not a new sentence in the card.
 
 ### Buttons
-- `.btn-primary` (Check): filled `--hanko`, white, Inter 600, full-width; hover darkens via
-  `filter: brightness(0.92)`. This is the one true primary action on a quiz page.
-- `.next-btn` (Next →): **outlined, not filled** — transparent background, `--hanko` border and
-  text, same hover as other secondary buttons. Deliberately *not* `.btn-primary`. Before answering,
-  Next silently skips the question; that's a secondary/fallback action, not equal in importance to
-  Check, and two solid `--hanko` blocks stacked in one column (plus the navy active mode-btn above
-  them) read as three equally "loud" elements with no hierarchy. Outlining Next fixes that with
-  color/weight alone — no layout restructuring needed.
+- `.btn-primary` (`#checkBtn`, `.check-btn`): filled `--hanko`, white, Inter 600, full-width;
+  hover darkens via `filter: brightness(0.92)`. **One button does double duty as Check/Next** —
+  there is no separate Next element anymore. `checkAnswer()` reads `answered`: if `false` it
+  grades the input and flips the button's `textContent` to "Next →"; if already `true` (i.e. the
+  button currently reads "Next →") it calls `nextQuestion()` instead, which resets the label back
+  to "Check". This existed as an accidental behavior even when there were two buttons (`Check`
+  already silently acted as `Next` once answered — the separate Next button was doing nothing
+  Check didn't already do post-answer) — merging just made the one real state machine visible
+  as one button instead of two.
+  - **Submitting blank counts as a wrong attempt**, it doesn't silently skip. Typing nothing and
+    pressing the button reveals the correct answer, marks it wrong, and flips to "Next →" — same
+    as any other incorrect answer. This was a deliberate product decision (not just a dedup): the
+    old separate Next button let you skip without any answer being scored at all, which is a
+    different, since-removed behavior. If "skip without penalty" is ever wanted back, it needs
+    its own explicit affordance — don't reintroduce it by special-casing blank input to bypass
+    `answered`/scoring again.
 - `.btn-secondary` / bare `<button>`: `--card` fill, `--line` border, `--ink` text.
 - All ≥44px tall.
 
@@ -213,10 +221,24 @@ it, not a new sentence in the card.
   wrong-answer banner shows **only the bare correct answer** — no "不正解。" kanji prefix, no
   "Answer:" label. The colored banner (wrong = red tokens) already signals it was incorrect;
   restating that in words on top of the color was redundant.
+- **`.feedback` is collapsed by default** (`max-height: 0; opacity: 0; padding: 0; margin-bottom: 0`)
+  and only expands to its visible size when `.correct`/`.wrong` is applied. It used to reserve a
+  fixed ~54px gap below the Check/Next button at all times (to avoid layout shift once feedback
+  appeared) — but that meant every unanswered question showed a big empty gap for no visible
+  reason. Collapsing it removes that dead space, and the expand/collapse is eased in over 0.25s
+  (`cubic-bezier(0.25, 1, 0.5, 1)`, an ease-out-quart — no bounce) rather than snapping, so the
+  stats line shifting down slightly reads as a deliberate reveal, not a jump. Respects
+  `prefers-reduced-motion` (transition removed, state changes instantly). Don't re-add a static
+  `min-height` here — that's exactly the gap this fixed.
 - There is no separate "Accepted: …" line for alternate readings anymore (`.accepted` /
   `#acceptedLabel` were removed) — the wrong-answer banner shows one canonical answer, not every
   accepted variant.
-- `.stats`: two blocks; `.stat-num` mono, `.stat-label` mono uppercase eyebrow.
+- `.stats`: a single inline line — `3 correct · 1 wrong` — not two boxed cards. Two tinted,
+  padded, rounded `.stat` containers for what's ultimately two numbers was exactly the kind of
+  unnecessary card distill flags; a plain centered row (mono `.stat-num` + uppercase eyebrow
+  `.stat-label`, `·` divider in `--line`) carries the same information without the extra chrome
+  and reads quieter, which fits the "quiet confidence, not gamification" brand principle better
+  than a stat-card treatment would. Don't reintroduce per-stat card backgrounds.
 
 ## Interaction / navigation model
 - Two quizzes are separate static pages; the tab bar navigates directly between them, and the
