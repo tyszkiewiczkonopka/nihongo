@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="container">
+    <div class="container quiz-container">
       <header class="quiz-header">
         <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
         <a class="hint-link" id="hintLink" target="_blank" rel="noopener" aria-label="Reference notes" title="Reference notes">
@@ -28,14 +28,13 @@
       </nav>
 
       <div class="controls">
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="modeNum" onclick="setMode('num')">Number → Japanese</button>
-          <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese → Number</button>
+        <div class="mode-toggle direction-toggle">
+          <button class="mode-btn active" id="modeNum" onclick="setMode('num')" aria-label="Number to Japanese">123 → <span class="jp">日本語</span></button>
+          <button class="mode-btn" id="modeJp" onclick="setMode('jp')" aria-label="Japanese to number"><span class="jp">日本語</span> → 123</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="prompt-label" id="promptLabel">How do you read this number in Japanese?</div>
         <div class="number-display" id="numDisplay">—</div>
         <div class="sub-hint" id="subHint"></div>
       </div>
@@ -45,8 +44,7 @@
         <button class="btn-primary check-btn" onclick="checkAnswer()">Check</button>
       </div>
       <div class="feedback" id="feedback"></div>
-      <div class="accepted" id="acceptedLabel"></div>
-      <button class="next-btn btn-primary" onclick="nextQuestion()">Next →</button>
+      <button class="next-btn" onclick="nextQuestion()">Next →</button>
 
       <div class="stats">
         <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
@@ -136,19 +134,16 @@
       answered = false;
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
-      document.getElementById('acceptedLabel').textContent = '';
       document.getElementById('subHint').textContent = '';
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').disabled = false;
       document.getElementById('answerInput').readOnly = false;
 
       if (mode === 'num') {
-        document.getElementById('promptLabel').textContent = 'How do you read this number in Japanese?';
         document.getElementById('numDisplay').textContent = current;
         document.getElementById('answerInput').placeholder = 'e.g. juuichi…';
         document.getElementById('answerInput').inputMode = 'text';
       } else {
-        document.getElementById('promptLabel').textContent = 'What number is this?';
         document.getElementById('numDisplay').textContent = toKanji(current);
         document.getElementById('answerInput').placeholder = 'type the number…';
         document.getElementById('answerInput').inputMode = 'numeric';
@@ -176,13 +171,10 @@
         const answersDisplay = toRomajiDisplay(current);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
         document.getElementById('subHint').textContent = toKanji(current);
-        if (!isCorrect && answersDisplay.length > 1) {
-          document.getElementById('acceptedLabel').textContent = 'Accepted: ' + answersDisplay.join(' / ');
-        }
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + answersDisplay[0];
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : answersDisplay[0];
       } else {
         isCorrect = parseInt(raw.trim()) === current;
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + current;
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : String(current);
       }
 
       document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');

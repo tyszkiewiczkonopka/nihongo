@@ -40,7 +40,7 @@ Three faces, each with a fixed job — this is the core of the type system:
 | Face | Role | Where |
 |------|------|-------|
 | **Shippori Mincho** (serif) | Japanese text, numerals, headings, wordmark | h1, brand wordmark, `.number-display`, `.sub-hint`, kanji, menu titles, notes headings |
-| **IBM Plex Mono** | Data, labels, controls, eyebrows | input, `.stat-num`, `.accepted`, `.ampm-badge`, `.mode-btn`, `.quiz-tab`, `.prompt-label`, `.stat-label`, `.unit-label`, `.menu-sub`, notes romaji/labels |
+| **IBM Plex Mono** | Data, labels, controls, eyebrows | input, `.stat-num`, `.accepted`, `.ampm-badge`, `.mode-btn`, `.quiz-tab`, `.stat-label`, `.unit-label`, `.menu-sub`, notes romaji/labels |
 | **Inter** | Body copy & primary CTAs | `body` default, `.feedback`, `.btn-primary` (Check/Next), notes body/`.sec-desc` |
 
 Rules of thumb:
@@ -93,11 +93,29 @@ authored specifically for the quiz pages.
 - `body`: flex column, `align-items:center`, **`justify-content:flex-start`** with
   `padding-top: max(1rem, 8vh)`. Content is anchored near the top — **do not vertically center
   the whole viewport** (that left ~300px of dead space on mobile, the original bug).
+  - **Exception — tablet/desktop portrait** (`min-width: 600px` and `min-height: 700px`):
+    `justify-content: center` instead. Top-anchoring exists to avoid dead space below a *short*
+    mobile viewport; on a tall/wide one the same top-anchor just moves the dead space to the
+    bottom of the page instead of removing it. Past this size threshold there's enough room that
+    centering reads as intentional. Mobile portrait (375×812) stays under the `min-width: 600px`
+    gate and keeps the top-anchored behavior.
 - `.wrap`: `max-width: 420px`, centered — the quiz column. (Notes pages use a wider `.wrap`,
   760–920px, since they're long-form reading.)
 - `.container`: the card surface — `var(--card)`, `1px solid var(--line)`, `border-radius:16px`,
   flat (no drop shadow; the notes pages are flat too).
 - Subtle fixed "washi" texture via `body::before` (two faint radial gradients).
+- **Phone landscape** (`orientation: landscape` and `max-height: 500px`, scoped to
+  `.quiz-container` — the class on `numbers.html`/`counters.html`'s `.container`, not the home
+  menu): the portrait vertical stack doesn't fit without scrolling past the entire header/tabs/
+  settings just to reach the number card. `.quiz-container` becomes a 2-column grid (`220px 1fr`)
+  — settings (counter-type pills, direction toggle) in the left column, the actual quiz
+  interaction (card/input/feedback/next/stats) in the right column, header/tabs spanning both
+  columns on top. `align-items: start` on the grid is required — without it, grid's default
+  `stretch` makes the short left-column controls balloon to match the tall card's row height.
+  The grid itself gets `max-height` + `overflow-y: auto` as a fallback so Check/feedback/stats
+  are one small scroll away instead of unreachable, rather than trying to compress everything
+  to fit exactly (which fought readability). Not applied to the home menu (`index.html`) — its
+  two-item list never had a landscape problem.
 
 ## Components
 
@@ -129,14 +147,57 @@ authored specifically for the quiz pages.
 
 ### In-page toggles — `.mode-btn` (pills)
 Mono, `min-height:44px`. Default = outlined on `--card`; `.active` = filled `--indigo-deep`,
-white text. Used for direction toggles (Number→JP / JP→Number) and, on counters, the counter-type
-selector (Hours / Age 歳 / Class 年生) — which **replaced a native `<select>`** so all controls
-share one custom aesthetic. Counter buttons carry `data-counter="…"`; `setCounter(id)` toggles
-`.active` and re-renders.
+white text. Used for direction toggles and, on counters, the counter-type selector
+(Hours / Age 歳 / Class 年生) — which **replaced a native `<select>`** so all controls share one
+custom aesthetic. Counter buttons carry `data-counter="…"`; `setCounter(id)` toggles `.active`
+and re-renders.
+
+**Every `.mode-toggle` row is a single equal-width flex group** (`.mode-toggle .mode-btn { flex:1;
+min-width:0 }`), never content-sized pills. Content-sized pills silently wrapped onto two stacked
+lines once the combined label width exceeded the ~295px content column (verified live — this was
+a real bug, not a hypothetical). `.mode-btn` sets `white-space: normal` specifically to override
+the base `button` rule's `nowrap` — without it, long labels overflow their flex cell horizontally
+instead of wrapping to a second line. **When adding any new segmented/toggle group, reuse this
+flex:1 + min-width:0 + white-space:normal combination; don't hand-size pills to content.**
+
+**Direction-toggle labels are a fixed universal pair: `123 → 日本語` / `日本語 → 123`.**
+Earlier revisions spelled these out per quiz (`"Class year → Japanese"`, ~22 chars), which is what
+caused the two-line wrapping bug above and duplicated the counter-type pill directly above it
+(counters.html already states "Hours"/"Age"/"Class" one row up). `123` stands in for "whatever
+numeric value this quiz drills" — it reads the same for numbers, hours, ages, and class years, so
+`setCounter()` no longer needs to rewrite `#modeVal`/`#modeJp` text per counter type. The kanji
+half is wrapped in `<span class="jp">` (`.mode-btn .jp { font-family: 'Shippori Mincho', serif;
+font-size: 14px; }`) since Japanese glyphs are always serif, never mono, per the type system.
+`.mode-btn` carries `gap: 4px` so the plain-text run and the `.jp` span space evenly around the
+arrow — without it the arrow hugs whichever side is the kanji span.
+
+On `counters.html`, two independent `.mode-toggle` groups stack directly (counter-type, then
+direction). They intentionally share the same pill styling (both are in-page settings, not
+navigation — see the quiz-tabs vs. mode-btn distinction below), so the only thing separating them
+as two *different* decisions is space: the counter-type group carries `.counter-toggle`
+(`margin-bottom: 2rem`), clearly more generous than the 6px gap *within* a row or the 1.5rem
+before the prompt card. Don't zero out `.counter-toggle`'s margin via a `.controls .counter-toggle`
+override — that collapsed the gap to 0 in an earlier pass and is exactly the mistake to avoid.
+
+### Prompt card
+The `.card` no longer carries a `.prompt-label` sentence (e.g. "How do you read this number in
+Japanese?", "What time is this in Japanese?"). It was removed as redundant: the direction toggle
+(`123 → 日本語` / `日本語 → 123`) already states the direction, the counter-type pills (Hours/Age/
+Class, on counters.html) already state the category, and `.unit-label` still supplies the one
+piece of context those don't ("years old", "grade / year"). The card is now just
+`.number-display` (+ `.unit-label` where relevant) + `.sub-hint`. Don't re-add a restated question
+here — if a future counter type needs disambiguation the toggle/pill labels are the place to add
+it, not a new sentence in the card.
 
 ### Buttons
-- `.btn-primary` (Check, Next): filled `--hanko`, white, Inter 600, full-width; hover darkens
-  via `filter: brightness(0.92)`.
+- `.btn-primary` (Check): filled `--hanko`, white, Inter 600, full-width; hover darkens via
+  `filter: brightness(0.92)`. This is the one true primary action on a quiz page.
+- `.next-btn` (Next →): **outlined, not filled** — transparent background, `--hanko` border and
+  text, same hover as other secondary buttons. Deliberately *not* `.btn-primary`. Before answering,
+  Next silently skips the question; that's a secondary/fallback action, not equal in importance to
+  Check, and two solid `--hanko` blocks stacked in one column (plus the navy active mode-btn above
+  them) read as three equally "loud" elements with no hierarchy. Outlining Next fixes that with
+  color/weight alone — no layout restructuring needed.
 - `.btn-secondary` / bare `<button>`: `--card` fill, `--line` border, `--ink` text.
 - All ≥44px tall.
 
@@ -148,8 +209,13 @@ share one custom aesthetic. Counter buttons carry `data-counter="…"`; `setCoun
   under the button was removed as redundant.
 
 ### Feedback / stats
-- `.feedback` banner: `.correct` (green tokens) / `.wrong` (red tokens).
-- `.accepted`: mono, lists alternate accepted readings.
+- `.feedback` banner: `.correct` (green tokens, "正解！ Correct!") / `.wrong` (red tokens). The
+  wrong-answer banner shows **only the bare correct answer** — no "不正解。" kanji prefix, no
+  "Answer:" label. The colored banner (wrong = red tokens) already signals it was incorrect;
+  restating that in words on top of the color was redundant.
+- There is no separate "Accepted: …" line for alternate readings anymore (`.accepted` /
+  `#acceptedLabel` were removed) — the wrong-answer banner shows one canonical answer, not every
+  accepted variant.
 - `.stats`: two blocks; `.stat-num` mono, `.stat-label` mono uppercase eyebrow.
 
 ## Interaction / navigation model
@@ -168,7 +234,10 @@ share one custom aesthetic. Counter buttons carry `data-counter="…"`; `setCoun
 ## Verification (no automated tests)
 Static site via `wrangler dev` on port 8787; verify in the live browser preview:
 1. `/`, `/numbers`, `/counters` at **375×812 (mobile)** and a desktop width — no homepage dead
-   space, no horizontal scroll.
+   space, no horizontal scroll. Also check **tablet portrait (768×1024)** — content should be
+   vertically centered, not stranded near the top — and **phone landscape (e.g. 812×375)** — the
+   quiz pages should reflow to the 2-column layout with settings on the left and the number
+   card/input/Check reachable without excessive scrolling.
 2. Tabs navigate correctly and mark the right page `.active`; header hint icon points to the
    correct note and opens a new tab.
 3. Touch targets ≥44px (inspect bounding boxes).

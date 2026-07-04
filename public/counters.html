@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="container">
+    <div class="container quiz-container">
       <header class="quiz-header">
         <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
         <a class="hint-link" id="hintLink" target="_blank" rel="noopener" aria-label="Reference notes" title="Reference notes">
@@ -28,19 +28,18 @@
       </nav>
 
       <div class="controls">
-        <div class="mode-toggle">
+        <div class="mode-toggle counter-toggle">
           <button class="mode-btn counter-btn active" data-counter="hours" onclick="setCounter('hours')">Hours</button>
-          <button class="mode-btn counter-btn" data-counter="age" onclick="setCounter('age')">Age 歳</button>
-          <button class="mode-btn counter-btn" data-counter="class" onclick="setCounter('class')">Class 年生</button>
+          <button class="mode-btn counter-btn" data-counter="age" onclick="setCounter('age')">Age</button>
+          <button class="mode-btn counter-btn" data-counter="class" onclick="setCounter('class')">Class</button>
         </div>
       </div>
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="modeVal" onclick="setMode('val')">→ Japanese</button>
-        <button class="mode-btn" id="modeJp" onclick="setMode('jp')">Japanese →</button>
+      <div class="mode-toggle direction-toggle">
+        <button class="mode-btn active" id="modeVal" onclick="setMode('val')" aria-label="Value to Japanese">123 → <span class="jp">日本語</span></button>
+        <button class="mode-btn" id="modeJp" onclick="setMode('jp')" aria-label="Japanese to value"><span class="jp">日本語</span> → 123</button>
       </div>
 
       <div class="card">
-        <div class="prompt-label" id="promptLabel">How do you say this in Japanese?</div>
         <div class="number-display" id="numDisplay">—</div>
         <div class="unit-label" id="unitLabel"></div>
         <div class="sub-hint" id="subHint"></div>
@@ -51,8 +50,7 @@
         <button class="btn-primary check-btn" onclick="checkAnswer()">Check</button>
       </div>
       <div class="feedback" id="feedback"></div>
-      <div class="accepted" id="acceptedLabel"></div>
-      <button class="next-btn btn-primary" onclick="nextQuestion()">Next →</button>
+      <button class="next-btn" onclick="nextQuestion()">Next →</button>
 
       <div class="stats">
         <div class="stat"><div class="stat-num" id="statCorrect">0</div><div class="stat-label">correct</div></div>
@@ -147,9 +145,7 @@
           return ap ? ap.toUpperCase() + ' ' + h + ':' + mm : h + ':' + mm;
         },
         placeholderVal(ap) { return ap ? 'e.g. gozen ichiji sanjuugofun' : 'e.g. ichiji sanjuugofun'; },
-        placeholderJp(ap) { return ap ? 'e.g. AM 1:35' : 'e.g. 1:35'; },
-        promptVal: 'What time is this in Japanese?',
-        promptJp: 'What time is this?'
+        placeholderJp(ap) { return ap ? 'e.g. AM 1:35' : 'e.g. 1:35'; }
       },
       age: {
         label: 'age',
@@ -162,9 +158,7 @@
         jpAnswers(n) { return [String(n)]; },
         jpDisplay(n) { return String(n); },
         placeholderVal() { return 'e.g. nijussai'; },
-        placeholderJp() { return 'type the age…'; },
-        promptVal: 'How do you say this age in Japanese?',
-        promptJp: 'How old is this?'
+        placeholderJp() { return 'type the age…'; }
       },
       class: {
         label: 'class year',
@@ -177,9 +171,7 @@
         jpAnswers(n) { return [String(n)]; },
         jpDisplay(n) { return String(n); },
         placeholderVal() { return 'e.g. sannensei'; },
-        placeholderJp() { return 'type the year…'; },
-        promptVal: 'What grade/year is this in Japanese?',
-        promptJp: 'What year is this?'
+        placeholderJp() { return 'type the year…'; }
       }
     };
 
@@ -196,9 +188,6 @@
       document.querySelectorAll('.counter-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.counter === id);
       });
-      const c = activeCounter();
-      document.getElementById('modeVal').textContent = c.label[0].toUpperCase() + c.label.slice(1) + ' → Japanese';
-      document.getElementById('modeJp').textContent = 'Japanese → ' + c.label[0].toUpperCase() + c.label.slice(1);
       nextQuestion();
     }
 
@@ -218,20 +207,17 @@
       answered = false;
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'feedback';
-      document.getElementById('acceptedLabel').textContent = '';
       document.getElementById('subHint').textContent = '';
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').disabled = false;
       document.getElementById('answerInput').readOnly = false;
 
       if (mode === 'val') {
-        document.getElementById('promptLabel').textContent = c.promptVal;
         const d = c.displayValue(curVal, curAp);
         document.getElementById('numDisplay').innerHTML = d.html;
         document.getElementById('unitLabel').textContent = d.unit;
         document.getElementById('answerInput').placeholder = c.placeholderVal(curAp);
       } else {
-        document.getElementById('promptLabel').textContent = c.promptJp;
         document.getElementById('numDisplay').textContent = c.toKanji(curVal, curAp);
         document.getElementById('unitLabel').textContent = '';
         document.getElementById('answerInput').placeholder = c.placeholderJp(curAp);
@@ -257,12 +243,11 @@
         const answers = c.toRomaji(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
         document.getElementById('subHint').textContent = c.toKanji(curVal, curAp);
-        if (!isCorrect) document.getElementById('acceptedLabel').textContent = 'Accepted: ' + answers.join(' / ');
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + answers[0];
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : answers[0];
       } else {
         const answers = c.jpAnswers(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : '不正解。Answer: ' + c.jpDisplay(curVal, curAp);
+        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : c.jpDisplay(curVal, curAp);
       }
 
       document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');

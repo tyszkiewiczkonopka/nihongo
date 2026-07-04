@@ -170,23 +170,28 @@ h1 {
 .controls {
   display: flex;
   gap: 8px;
-  margin-bottom: 0.75rem;
-  flex-wrap: wrap;
 }
 
 .mode-toggle {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
 
+.counter-toggle { margin-bottom: 2rem; }
+
+.mode-toggle .mode-btn { flex: 1; min-width: 0; }
+
 .mode-btn {
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 10px 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.25;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 600;
@@ -205,6 +210,8 @@ h1 {
   border-color: var(--indigo-deep);
 }
 
+.mode-btn .jp { font-family: 'Shippori Mincho', serif; font-size: 14px; }
+
 /* ---------- prompt card ---------- */
 .card {
   background: var(--paper-alt);
@@ -218,14 +225,6 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-}
-
-.prompt-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
 }
 
 .number-display {
@@ -317,7 +316,16 @@ button:hover { background: var(--paper-alt); }
 
 .btn-primary:hover { filter: brightness(0.92); background: var(--hanko); }
 
-.next-btn { width: 100%; margin-top: 6px; }
+.next-btn {
+  width: 100%;
+  margin-top: 6px;
+  background: transparent;
+  border-color: var(--hanko);
+  color: var(--hanko);
+  font-weight: 600;
+}
+
+.next-btn:hover { background: var(--paper-alt); }
 
 .check-btn { width: 100%; }
 
@@ -334,15 +342,6 @@ button:hover { background: var(--paper-alt); }
 
 .feedback.correct { color: var(--correct); background: var(--correct-bg); }
 .feedback.wrong   { color: var(--wrong); background: var(--wrong-bg); }
-
-.accepted {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--ink-soft);
-  text-align: center;
-  min-height: 18px;
-  margin-bottom: 2px;
-}
 
 /* ---------- stats ---------- */
 .stats {
@@ -412,4 +411,67 @@ button:hover { background: var(--paper-alt); }
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--ink-soft);
+}
+
+/* ---------- tablet/desktop portrait: abundant vertical room ---------- */
+/* Top-anchoring (body's default justify-content: flex-start) exists to
+   avoid a dead gap ABOVE short mobile viewports (see .wrap comment).
+   On a tall, wide viewport (tablet/desktop) that same top-anchor leaves
+   a much bigger dead gap BELOW the card instead. Past this threshold
+   there's enough room that vertical centering reads as intentional
+   rather than as either kind of dead space. */
+@media (min-width: 600px) and (min-height: 700px) {
+  body { justify-content: center; padding-top: 1rem; }
+}
+
+/* ---------- phone landscape: quiz pages only ---------- */
+/* Short viewports (phone rotated) can't fit the portrait vertical stack
+   without scrolling past the entire settings/nav to reach the answer
+   input. Reflow into two columns: settings on the left, the actual
+   quiz interaction (card/input/feedback/stats) on the right. Scoped to
+   .quiz-container (not the home menu) and to short viewports only
+   (max-height, not max-width) so tablet/desktop landscape — which has
+   plenty of vertical room — keeps the normal centered column. */
+@media (orientation: landscape) and (max-height: 500px) {
+  body { padding-top: 1rem; padding-bottom: 1rem; }
+
+  .wrap { max-width: 680px; }
+
+  .quiz-container {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    align-items: start;
+    column-gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+  }
+
+  .quiz-container > .quiz-header,
+  .quiz-container > .quiz-tabs {
+    grid-column: 1 / -1;
+  }
+
+  .quiz-header { margin-bottom: 0.5rem; }
+  .quiz-tabs { margin-bottom: 0.75rem; }
+
+  .quiz-container > .controls,
+  .quiz-container > .mode-toggle.direction-toggle {
+    grid-column: 1;
+  }
+
+  .mode-toggle { margin-bottom: 0.75rem; }
+  .counter-toggle { margin-bottom: 0.75rem; }
+
+  .quiz-container > .card,
+  .quiz-container > .input-row,
+  .quiz-container > .feedback,
+  .quiz-container > .next-btn,
+  .quiz-container > .stats {
+    grid-column: 2;
+  }
+
+  .card { min-height: 0; padding: 1.25rem 1rem; margin-bottom: 0.75rem; }
+  .number-display { font-size: 40px; }
+  .stats { margin-top: 0.75rem; }
 }
