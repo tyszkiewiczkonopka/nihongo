@@ -28,14 +28,61 @@
   }
   .jp{font-family:'Shippori Mincho',serif;}
   .mono{font-family:'IBM Plex Mono',monospace;}
-  .wrap{max-width:760px;margin:0 auto;padding:48px 24px 60px;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px 60px;}
 
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:100px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--shu);
+    margin-bottom:22px;
+  }
+  .pillars{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .pillar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:18px 22px;
+    min-width:92px;
+  }
+  .pillar .kanji{
+    font-family:'Shippori Mincho',serif;
+    font-size:56px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1;
+  }
+  .pillar .val{
+    margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--shu);
+  }
+  .pillar .sep{
+    font-size:22px;
+    color:var(--line);
+    align-self:center;
+    margin:0 2px;
+  }
   h1{
     font-family:'Shippori Mincho',serif;
     font-weight:600;
     font-size:38px;
     line-height:1.25;
-    margin:0 0 16px;
+    margin:0;
     color:var(--ink);
   }
   .sub{
@@ -43,8 +90,7 @@
     font-size:16px;
     line-height:1.65;
     max-width:620px;
-    margin:0 0 28px;
-    border-bottom:2px solid var(--ink);
+    margin:28px auto 0;
     padding-bottom:20px;
   }
   .stamp-key{
@@ -52,7 +98,7 @@
     gap:16px;
     align-items:center;
     font-size:13px;
-    margin-bottom:28px;
+    margin:28px 0;
     flex-wrap:wrap;
   }
   .key-item{display:flex;align-items:center;gap:6px;}
@@ -235,10 +281,21 @@
 </head>
 <body>
 
-<div class="wrap">
+<section class="hero">
+  <div class="eyebrow">助数詞の不規則 · Counter Irregularities</div>
+  <div class="pillars">
+    <div class="pillar"><div class="kanji">時</div><div class="val">hour · ji</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">分</div><div class="val">minute · fun</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">歳</div><div class="val">age · sai</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">年生</div><div class="val">grade · nensei</div></div>
+  </div>
+  <h1>It's not new numbers.<br>It's colliding sounds.</h1>
+</section>
 
-<h1>助数詞の不規則 <span style="font-weight:400;font-size:0.7em;">Counter Irregularities</span></h1>
-<p class="sub">時 / 分 / 歳 / 年生 — regulars in ink, exceptions marked in red like a teacher's correction</p>
+<div class="wrap">
 
 <div class="stamp-key">
   <div class="key-item"><div class="swatch reg"></div> regular reading</div>
@@ -246,9 +303,6 @@
 </div>
 
 <section>
-  <h2><span class="jp">①</span> Four counters, one at a time</h2>
-  <p class="desc">Each counter's irregular readings are pulled out as cards — those are the ones worth memorizing. Everything else follows the plain number reading and is listed underneath in shorthand.</p>
-
   <div class="counter-block">
     <div class="counter-head"><span class="kanji">時</span><span class="label">hour</span><span class="count-note">3 irregular</span></div>
     <div class="irr-cards">
@@ -279,7 +333,7 @@
       <div class="irr-card"><span class="n">10</span><span class="reading">十歳</span><span class="romaji">jussai</span></div>
     </div>
     <p class="regulars-line"><span class="rl-label">regular:</span> <span class="rd">二歳</span> nisai · <span class="rd">三歳</span> sansai · <span class="rd">四歳</span> yonsai · <span class="rd">五歳</span> gosai · <span class="rd">六歳</span> rokusai · <span class="rd">七歳</span> nanasai · <span class="rd">九歳</span> kyuusai</p>
-    <p class="note">20歳 breaks the pattern completely: <strong>はたち / hatachi</strong>. Not a number+counter combo at all — a standalone word. Worth its own flashcard.</p>
+    <p class="note">20歳 breaks the pattern completely: <strong>はたち / hatachi</strong>. 
   </div>
 
   <div class="counter-block">
@@ -291,68 +345,7 @@
   </div>
 </section>
 
-<section>
-  <h2><span class="jp">②</span> Why 分 (minutes) misbehaves</h2>
-  <p class="desc">The minute-counter isn't random — it follows a euphony rule based on how the number's last sound meets ふん. Grouping by trigger sound turns six "random" exceptions into two rules.</p>
-
-  <div class="flow-wrap">
-
-    <div class="flow-row irregular">
-      <div class="flow-nums">
-        <span class="n">1, 6, 8, 10</span>
-        <span class="end">end in a "stop" sound</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="flow-result">
-        <span class="rule">ふん hardens to っぷん (geminate + p)</span>
-        <span class="examples">ippun · roppun · happun · juppun</span>
-      </div>
-    </div>
-
-    <div class="flow-row">
-      <div class="flow-nums">
-        <span class="n">2, 5, 7, 9</span>
-        <span class="end">end in a vowel-ish sound</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="flow-result">
-        <span class="rule">ふん stays plain</span>
-        <span class="examples">nifun · gofun · nanafun · kyuufun</span>
-      </div>
-    </div>
-
-    <div class="flow-row irregular">
-      <div class="flow-nums">
-        <span class="n">3</span>
-        <span class="end">ん-adjacent</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="flow-result">
-        <span class="rule">ふん shifts to ぷん (no gemination, just p)</span>
-        <span class="examples">sanpun</span>
-      </div>
-    </div>
-
-    <div class="flow-row">
-      <div class="flow-nums">
-        <span class="n">4</span>
-        <span class="end">already ends in ん</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="flow-result">
-        <span class="rule">no change needed</span>
-        <span class="examples">yonpun</span>
-      </div>
-    </div>
-
-  </div>
-
-  <p class="note">Same っぷ-hardening shows up in 歳: issai, hassai, jussai are the same three "stop-sound" numbers (1, 8, 10) doing the same thing — plus 6 in 時 territory doesn't apply there, but the 1/6/8/10 cluster is worth remembering as a set, not four separate exceptions.</p>
-</section>
-
 </div>
-
-<footer>時 · 分 · 歳 · 年生 — the red marks are the ones worth flashcarding first</footer>
 
 </body>
 </html>

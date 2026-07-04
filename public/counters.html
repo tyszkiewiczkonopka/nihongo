@@ -60,6 +60,7 @@
   </div>
 
   <script src="notes.js"></script>
+  <script src="quiz-feedback.js"></script>
   <script>
     const note = NOTES.find(n => n.id === 'counters-reference');
     document.getElementById('hintLink').href = note.href;
@@ -239,18 +240,22 @@
 
       const c = activeCounter();
       let isCorrect = false;
+      let mainHtml = '';
+      let romajiText = '';
 
       if (mode === 'val') {
         const answers = c.toRomaji(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
         document.getElementById('subHint').textContent = c.toKanji(curVal, curAp);
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : answers[0];
+        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(answers[0], raw, normalize);
       } else {
         const answers = c.jpAnswers(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
-        document.getElementById('feedback').textContent = isCorrect ? '正解！ Correct!' : c.jpDisplay(curVal, curAp);
+        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(c.jpDisplay(curVal, curAp), raw, normalize);
+        romajiText = c.toRomaji(curVal, curAp)[0];
       }
 
+      document.getElementById('feedback').innerHTML = feedbackHtml(mainHtml, romajiText);
       document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
       if (isCorrect) { correct++; } else { wrong++; }
       document.getElementById('statCorrect').textContent = correct;

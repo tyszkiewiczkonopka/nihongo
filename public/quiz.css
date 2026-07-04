@@ -327,6 +327,10 @@ button:hover { background: var(--paper-alt); }
   max-height: 0;
   opacity: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   font-size: 15px;
   font-weight: 500;
   text-align: center;
@@ -341,14 +345,23 @@ button:hover { background: var(--paper-alt); }
 
 .feedback.correct,
 .feedback.wrong {
-  max-height: 40px;
+  max-height: 64px;
   opacity: 1;
   padding: 6px 0;
   margin-bottom: 4px;
 }
 
 .feedback.correct { color: var(--correct); background: var(--correct-bg); }
-.feedback.wrong   { color: var(--wrong); background: var(--wrong-bg); }
+.feedback.wrong   { color: var(--ink); background: var(--wrong-bg); }
+
+.feedback.wrong .wrong-part { color: var(--wrong); font-weight: 700; }
+
+.feedback-romaji {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .feedback { transition: none; }

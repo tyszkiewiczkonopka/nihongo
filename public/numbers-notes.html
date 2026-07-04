@@ -239,9 +239,10 @@
     margin-bottom:10px;
   }
   .change-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:64px 56px 1fr;
+    align-items:baseline;
+    column-gap:12px;
     padding:10px 4px;
     border-bottom:1px solid var(--line);
     font-family:'IBM Plex Mono',monospace;
@@ -249,6 +250,8 @@
   }
   .change-row.exception{color:var(--hanko); font-weight:600;}
   .change-row .k{font-family:'Shippori Mincho',serif; font-size:16px; color:var(--ink); font-weight:600;}
+  .change-row span:nth-child(2){text-align:right; color:var(--ink-soft);}
+  .change-row.exception span:nth-child(2){color:var(--hanko);}
 
   /* ---------- BUILDER (signature) ---------- */
   .builder{
@@ -405,7 +408,6 @@
     <div class="pillar"><div class="kanji">万</div><div class="val">10,000 · man</div></div>
   </div>
   <h1>It's not memorization.<br>It's multiplication.</h1>
-  <p class="sub">English numbers are full of irregular words — "eleven," "twelve," "twenty" don't spell out their arithmetic. Japanese numbers do. Every number from 1 to 10,000 is built from just <b>nine digits</b> and <b>four place values</b>, combined the way you'd read an equation.</p>
 </section>
 
 <div class="wrap">
@@ -414,7 +416,6 @@
     <div class="sec-head">
       <div class="sec-num">01 — THE ALPHABET</div>
       <h2 class="sec-title">Nine digits, zero to ten</h2>
-      <p class="sec-desc">These are the only digit-words you'll ever need — every larger number reuses them. Three digits have a second, more formal reading (in red); the everyday one is what you'll use in speech.</p>
     </div>
     <div class="digit-grid" id="digitGrid"></div>
   </section>
@@ -423,7 +424,6 @@
     <div class="sec-head">
       <div class="sec-num">02 — THE ENGINE</div>
       <h2 class="sec-title">Digit × place value = word</h2>
-      <p class="sec-desc">Each place value is its own kanji. To build a multiple of it, you simply place a digit in front — like a coefficient. The single exception: at exactly "1×", 十 · 百 · 千 drop the 一, but 万 keeps it.</p>
     </div>
     <div class="engine-grid">
       <div class="engine-card">
@@ -454,7 +454,6 @@
     <div class="sec-head">
       <div class="sec-num">03 — THE EXCEPTIONS</div>
       <h2 class="sec-title">Where the sound bends</h2>
-      <p class="sec-desc">The kanji never change — only six pronunciations soften for ease of speech, all with 3, 6, or 8. Everything else follows the plain digit + place-value rule exactly.</p>
     </div>
     <div class="change-grid">
       <div>
@@ -486,10 +485,10 @@
       <input type="range" id="numSliderLow" min="1" max="10000" value="3862" step="1">
       <input type="range" id="numSliderHigh" min="10000" max="99999999" value="10000" step="1000" style="display:none;">
       <div class="blocks" id="blocks"></div>
-      <div class="result-row">
+      <!-- <div class="result-row">
         <div class="result-kanji" id="resultKanji">三千八百六十二</div>
         <div class="result-romaji" id="resultRomaji">sanzen happyaku rokujuu ni</div>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -546,7 +545,6 @@
 
 </div>
 
-<footer>一 · 十 · 百 · 千 · 万 — the same five characters carry you from 1 to 9,999万 and beyond.</footer>
 
 <script>
 // ---- 01 digit grid ----
