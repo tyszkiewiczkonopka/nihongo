@@ -175,7 +175,7 @@
         const answersDisplay = toRomajiDisplay(current);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
         document.getElementById('subHint').textContent = toKanji(current);
-        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(answersDisplay[0], raw, normalize);
+        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(pickClosestVariant(answersDisplay, raw, normalize), raw, normalize);
       } else {
         isCorrect = parseInt(raw.trim()) === current;
         mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(String(current), raw, normalize);

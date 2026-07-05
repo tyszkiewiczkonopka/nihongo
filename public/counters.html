@@ -120,10 +120,10 @@
         randRange() { return Math.floor(Math.random() * 12) + 1; },
         toRomaji(h, ap) {
           const mm = this._m;
-          const prefix = ap ? ampmR[ap] + ' ' : '';
+          const prefix = ap ? ampmR[ap] : '';
           const answers = new Set();
-          answers.add(prefix + hourR[h] + minutesR(mm));
-          if (mm === 30) answers.add(prefix + hourR[h] + 'han');
+          answers.add([prefix, hourR[h], minutesR(mm)].filter(Boolean).join(' '));
+          if (mm === 30) answers.add([prefix, hourR[h], 'han'].filter(Boolean).join(' '));
           return [...answers];
         },
         toKanji(h, ap) {
@@ -247,7 +247,7 @@
         const answers = c.toRomaji(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
         document.getElementById('subHint').textContent = c.toKanji(curVal, curAp);
-        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(answers[0], raw, normalize);
+        mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(pickClosestVariant(answers, raw, normalize), raw, normalize);
       } else {
         const answers = c.jpAnswers(curVal, curAp);
         isCorrect = answers.some(a => normalize(a) === normalize(raw));
