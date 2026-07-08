@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nihongo Dojo — Vocab</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+  <style>
+    .romaji-display {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      word-break: break-word;
+    }
+
+    .kana-reveal {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .translation-reveal {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      color: var(--ink-soft);
+    }
+
+    .progress-label { text-align: center; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="container quiz-container">
+      <header class="quiz-header">
+        <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
+      </header>
+
+      <div class="unit-label progress-label" id="progressLabel"></div>
+
+      <div class="card">
+        <div class="romaji-display" id="romajiDisplay">—</div>
+        <div class="sub-hint" id="revealHint"></div>
+      </div>
+
+      <button class="btn-primary check-btn" id="actionBtn" onclick="onAction()">Roll the dice</button>
+    </div>
+  </div>
+
+  <script>
+    const VOCAB = [
+    { k: "わたし", r: "watashi", p: "ja" },
+    { k: "あなた", r: "anata", p: "ty" },
+    { k: "かれ", r: "kare", p: "on" },
+    { k: "かのじょ", r: "kanojo", p: "ona" },
+    { k: "しゃしん", r: "shashin", p: "zdjęcia" },
+    { k: "どうぶつ", r: "doubutsu", p: "zwierzę" },
+    { k: "みず", r: "mizu", p: "woda" },
+    { k: "うみ", r: "umi", p: "morze" },
+    { k: "ひと", r: "hito", p: "człowiek" },
+    { k: "だれ", r: "dare", p: "kto" },
+    { k: "しゅっしん", r: "shusshin", p: "miejsce pochodzenia" },
+    { k: "くるま", r: "kuruma", p: "samochód" },
+    { k: "ねこ", r: "neko", p: "kot" },
+    { k: "りんご", r: "ringo", p: "jabłko" },
+    { k: "ざっし", r: "zasshi", p: "czasopismo" },
+    { k: "はい", r: "hai", p: "tak" },
+    { k: "いいえ", r: "iie", p: "nie" },
+    { k: "がっこう", r: "gakkou", p: "szkoła" },
+    { k: "しょうがっこう", r: "shougakkou", p: "szkoła podstawowa" },
+    { k: "しょうがくせい", r: "shougakusei", p: "uczeń podstawówki" },
+    { k: "ちゅうがっこう", r: "chuugakkou", p: "gimnazjum" },
+    { k: "ちゅうがくせい", r: "chuugakusei", p: "gimnazjalista" },
+    { k: "こうこう", r: "koukou", p: "liceum" },
+    { k: "こうこうせい", r: "koukousei", p: "licealist/ka" },
+    { k: "だいがく", r: "daigaku", p: "uniwersytet" },
+    { k: "だいがくせい", r: "daigakusei", p: "student" },
+    { k: "だいがくいん", r: "daigakuin", p: "studia magisterskie" },
+    { k: "だいがくいんせい", r: "daigakuinsei", p: "student studiów magisterskich" },
+    { k: "しごと", r: "shigoto", p: "praca" },
+    { k: "いしゃ", r: "isha", p: "lekarz" },
+    { k: "かいしゃいん", r: "kaishain", p: "pracownik" },
+    { k: "がくせい", r: "gakusei", p: "uczeń" },
+    { k: "せんせい", r: "sensei", p: "nauczyciel" },
+    { k: "けいさつかん", r: "keisatsukan", p: "policjant" },
+    { k: "しゅふ", r: "shufu", p: "gospodyni domowa" },
+    { k: "じむいん", r: "jimuin", p: "pracownik biurowy" },
+    { k: "こうむいん", r: "koumuin", p: "urzędnik" },
+    { k: "せんこう", r: "senkou", p: "specjalizacja" },
+    { k: "えいご", r: "eigo", p: "język angielski" },
+    { k: "きょういく", r: "kyouiku", p: "nauczanie (pedagogika)" },
+    { k: "けいざい", r: "keizai", p: "ekonomia" },
+    { k: "せいじ", r: "seiji", p: "polityka" },
+    { k: "びじゅつ", r: "bijutsu", p: "sztuka" },
+    { k: "ぶんがく", r: "bungaku", p: "literatura" },
+    { k: "れきし", r: "rekishi", p: "historia" },
+    { k: "かんこく", r: "kankoku", p: "Korea Południowa" },
+    { k: "ちゅうごく", r: "chuugoku", p: "Chiny" },
+    { k: "にほん", r: "nihon", p: "Japonia" },
+    { k: "じかん", r: "jikan", p: "czas" },
+    { k: "いま", r: "ima", p: "teraz" },
+    { k: "ごご", r: "gogo", p: "po południu" },
+    { k: "ごぜん", r: "gozen", p: "przed południem" },
+    { k: "はん", r: "han", p: "połowa" },
+    { k: "もの", r: "mono", p: "rzeczy" },
+    { k: "さいふ", r: "saifu", p: "portfel" },
+    { k: "でんわ", r: "denwa", p: "telefon" },
+    { k: "とけい", r: "tokei", p: "zegarek" },
+    { k: "ほん", r: "hon", p: "książka" },
+    { k: "はな", r: "hana", p: "kwiat" },
+    { k: "ぼうし", r: "boushi", p: "czapka" },
+    { k: "くつ", r: "kutsu", p: "buty" },
+    { k: "ふく", r: "fuku", p: "ubranie" },
+    { k: "えんぴつ", r: "enpitsu", p: "ołówek" },
+    { k: "けしゴム", r: "keshigomu", p: "gumka" },
+    { k: "はさみ", r: "hasami", p: "nożyczki" },
+    { k: "ふでばこ", r: "fudebako", p: "piórnik" },
+    { k: "なまえ", r: "namae", p: "imię" },
+    { k: "ばんごう", r: "bangou", p: "numer" },
+    { k: "なに", r: "nani", p: "co?" },
+    { k: "ご", r: "go", p: "(sufiks) język..." },
+    { k: "さい", r: "sai", p: "(sufiks) ... lat" },
+    { k: "さん", r: "san", p: "(sufiks) Pan/Pani" },
+    { k: "じ", r: "ji", p: "(sufiks) .. godzina" },
+    { k: "じん", r: "jin", p: "(sufiks) narodowość" },
+    { k: "ねんせい", r: "nensei", p: "(sufiks) student .. roku" },
+    { k: "しゅみ", r: "shumi", p: "hobby" },
+    { k: "ひゃく", r: "hyaku", p: "sto" },
+    { k: "せん", r: "sen", p: "tysiąc" },
+    { k: "いちまん", r: "ichiman", p: "dziesięć tysięcy" },
+    { k: "よじ", r: "yoji", p: "godzina czwarta" },
+    { k: "しちじ", r: "shichiji", p: "godzina siódma" },
+    { k: "くじ", r: "kuji", p: "godzina dziewiąta" },
+    { k: "はたち", r: "hatachi", p: "dwadzieścia lat" },
+    { k: "にじゅういっさい", r: "nijuuissai", p: "dwadzieścia jeden lat" },
+    { k: "じゅうはっさい", r: "juuhassai", p: "osiemnaście lat" },
+    { k: "じゅっぷん", r: "juppun", p: "dziesięć minut" },
+    { k: "にじゅっぷん", r: "nijuppun", p: "dwadzieścia minut" },
+    { k: "じゅうごふん", r: "juugofun", p: "piętnaście minut" },
+    { k: "にじゅうごふん", r: "nijuugofun", p: "dwadzieścia pięć minut" },
+    ];
+
+    let pool = [];
+    let current = null;
+    let state = 'idle'; // idle | rolled | revealed
+
+    function shuffle(array) {
+      const a = [...array];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function refillPool() {
+      pool = shuffle(VOCAB);
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function render() {
+      const display = document.getElementById('romajiDisplay');
+      const hint = document.getElementById('revealHint');
+      const btn = document.getElementById('actionBtn');
+      const progress = document.getElementById('progressLabel');
+
+      if (state === 'idle') {
+        display.textContent = '—';
+        hint.textContent = '';
+        btn.textContent = 'Roll the dice';
+      } else if (state === 'rolled') {
+        display.textContent = current.r;
+        hint.textContent = '';
+        btn.textContent = 'Reveal';
+      } else {
+        display.textContent = current.r;
+        hint.innerHTML = '<span class="kana-reveal">' + escapeHtml(current.k) + '</span><br>'
+          + '<span class="translation-reveal">' + escapeHtml(current.p) + '</span>';
+        btn.textContent = 'Next word';
+      }
+
+      progress.textContent = 'UNIT 1 · ' + pool.length + ' OF ' + VOCAB.length + ' LEFT';
+    }
+
+    function rollDice() {
+      if (pool.length === 0) refillPool();
+      current = pool.pop();
+      state = 'rolled';
+      render();
+    }
+
+    function onAction() {
+      if (state === 'idle' || state === 'revealed') {
+        rollDice();
+      } else {
+        state = 'revealed';
+        render();
+      }
+    }
+
+    refillPool();
+    render();
+  </script>
+</body>
+</html>
