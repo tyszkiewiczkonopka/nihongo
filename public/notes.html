@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不規則 — Numbers & Counter Irregularities</title>
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE7D9;
+    --paper-dark:#E1D9C6;
+    --ink:#2B2B29;
+    --ink-soft:#5C574E;
+    --shu:#C1440E;       /* traditional vermillion / red-pen ink */
+    --shu-soft:#E8DCC8;
+    --line:#C9BFA8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .jp{font-family:'Shippori Mincho',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px 60px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:100px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--shu);
+    margin-bottom:22px;
+  }
+  .pillars{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .pillar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:18px 22px;
+    min-width:92px;
+  }
+  .pillar .kanji{
+    font-family:'Shippori Mincho',serif;
+    font-size:56px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1;
+  }
+  .pillar .val{
+    margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--shu);
+  }
+  .pillar .sep{
+    font-size:22px;
+    color:var(--line);
+    align-self:center;
+    margin:0 2px;
+  }
+  h1{
+    font-family:'Shippori Mincho',serif;
+    font-weight:600;
+    font-size:38px;
+    line-height:1.25;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .stamp-key{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    font-size:13px;
+    margin:36px 0 8px;
+    flex-wrap:wrap;
+  }
+  .key-item{display:flex;align-items:center;gap:6px;}
+  .swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+  .swatch.reg{background:var(--paper-dark);border:1px solid var(--line);}
+  .swatch.irr{background:var(--shu);}
+
+  section{padding:40px 0;}
+  section + section{border-top:1px solid var(--line);}
+  h2{
+    font-family:'Shippori Mincho',serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.3;
+    margin:0 0 24px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  h2 .jp{font-size:1.1em;}
+
+  .counter-block{margin-bottom:28px;}
+  .counter-block:last-child{margin-bottom:0;}
+  .counter-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  .counter-head .kanji{font-family:'Shippori Mincho',serif;font-size:1.4rem;font-weight:600;}
+  .counter-head .romaji-main{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+    color:var(--shu);
+    font-weight:600;
+  }
+  .counter-head .label{font-size:0.85rem;color:var(--ink-soft);}
+  .counter-head .count-note{
+    margin-left:auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    color:var(--shu);
+    font-weight:600;
+  }
+
+  .irr-cards{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .irr-card{
+    position:relative;
+    background:var(--shu-soft);
+    border:1.5px solid var(--shu);
+    border-radius:8px;
+    padding:14px 18px 12px;
+    min-width:84px;
+    text-align:center;
+  }
+  .irr-card .n{
+    position:absolute;
+    top:6px; left:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.6rem;
+    color:var(--shu);
+    opacity:0.7;
+    font-weight:700;
+  }
+  .irr-card .reading{
+    display:block;
+    font-family:'Shippori Mincho',serif;
+    font-size:1.4rem;
+    font-weight:600;
+    color:var(--ink);
+    margin-top:8px;
+  }
+  .irr-card .romaji{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    color:var(--shu);
+    font-weight:600;
+    margin-top:6px;
+  }
+
+  /* ---------- NUMBER BUILDER ---------- */
+  .builder-intro{
+    font-size:15px;
+    color:var(--ink-soft);
+    line-height:1.65;
+    max-width:620px;
+    margin:0 0 20px;
+  }
+  .builder{
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px 22px 22px;
+  }
+  .builder-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .builder-num-input{
+    background:transparent;
+    border:none;
+    border-bottom:1.5px solid var(--shu);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:34px;
+    font-weight:600;
+    width:100%;
+    outline:none;
+    padding-bottom:4px;
+    margin-bottom:16px;
+  }
+  .scale-toggle{
+    display:flex;
+    gap:6px;
+    margin-bottom:12px;
+  }
+  .scale-btn{
+    flex:1;
+    background:var(--paper);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.02em;
+    padding:10px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    min-height:44px;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .scale-btn:hover{border-color:var(--shu);}
+  .scale-btn.active{
+    background:var(--shu);
+    border-color:var(--shu);
+    color:#fff;
+    font-weight:600;
+  }
+  .builder input[type=range]{
+    width:100%;
+    accent-color:var(--shu);
+    margin:2px 0 6px;
+  }
+  .blocks{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:18px;
+    min-height:64px;
+  }
+  .block{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:12px 16px;
+    text-align:center;
+    animation:pop 0.25s ease;
+  }
+  @keyframes pop{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+  .block .k{font-family:'Shippori Mincho',serif; font-size:26px; color:var(--ink);}
+  .block .r{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:4px;}
+  .block.changed{border-color:var(--shu); background:var(--shu-soft);}
+  .block.changed .r{color:var(--shu); font-weight:600;}
+  .result-row{
+    border-top:1px solid var(--line);
+    margin-top:18px;
+    padding-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .result-kanji{font-family:'Shippori Mincho',serif; font-size:26px; color:var(--ink);}
+  .result-romaji{font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--shu); font-weight:600;}
+
+  footer{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:20px;
+    border-top:1px solid var(--line);
+    padding-top:24px;
+    padding-bottom:16px;
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="eyebrow">不規則 · Numbers & Counter Irregularities</div>
+  <div class="pillars">
+    <div class="pillar"><div class="kanji">百</div><div class="val">100 · hyaku</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">千</div><div class="val">1,000 · sen</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">時</div><div class="val">hour · ji</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="kanji">歳</div><div class="val">age · sai</div></div>
+  </div>
+  <h1>Only the sounds that bend.</h1>
+</section>
+
+<div class="wrap">
+
+<div class="stamp-key">
+  <div class="key-item"><div class="swatch irr"></div> irregular reading (sound changes from the plain digit)</div>
+</div>
+
+<section>
+  <h2><span class="jp">数</span> Numbers · where the digit shifts</h2>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">四 · 七 · 九</span><span class="label">base digits with two readings</span><span class="count-note">3 alt</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">4</span><span class="reading">四</span><span class="romaji">yon / shi</span></div>
+      <div class="irr-card"><span class="n">7</span><span class="reading">七</span><span class="romaji">nana / shichi</span></div>
+      <div class="irr-card"><span class="n">9</span><span class="reading">九</span><span class="romaji">kyuu / ku</span></div>
+    </div>
+  </div>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">百</span><span class="romaji-main">hyaku</span><span class="label">hundreds</span><span class="count-note">3 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">300</span><span class="reading">三百</span><span class="romaji">sanbyaku</span></div>
+      <div class="irr-card"><span class="n">600</span><span class="reading">六百</span><span class="romaji">roppyaku</span></div>
+      <div class="irr-card"><span class="n">800</span><span class="reading">八百</span><span class="romaji">happyaku</span></div>
+    </div>
+  </div>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">千</span><span class="romaji-main">sen</span><span class="label">thousands</span><span class="count-note">2 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">3,000</span><span class="reading">三千</span><span class="romaji">sanzen</span></div>
+      <div class="irr-card"><span class="n">8,000</span><span class="reading">八千</span><span class="romaji">hassen</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="jp">組</span> Build it · how a number splits into tiles</h2>
+  <p class="builder-intro">Type or drag. The number breaks into its place-value tiles, largest to smallest, in the order you say it aloud. Irregular tiles glow vermillion. Past 10,000, 万 (man) takes its own coefficient, so the huge scale splits into groups of four.</p>
+  <div class="builder">
+    <div class="builder-label">Number</div>
+    <input class="builder-num-input" id="numInput" type="text" value="3862" inputmode="numeric">
+    <div class="scale-toggle" id="scaleToggle">
+      <button type="button" class="scale-btn active" data-scale="low">1 – 10,000</button>
+      <button type="button" class="scale-btn" data-scale="high">10,000 – 100,000,000</button>
+    </div>
+    <input type="range" id="numSliderLow" min="1" max="10000" value="3862" step="1">
+    <input type="range" id="numSliderHigh" min="10000" max="99999999" value="10000" step="1000" style="display:none;">
+    <div class="blocks" id="blocks"></div>
+    <div class="result-row">
+      <div class="result-kanji" id="resultKanji"></div>
+      <div class="result-romaji" id="resultRomaji"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="jp">助</span> Counters · where the counter collides</h2>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">時</span><span class="romaji-main">ji</span><span class="label">hour</span><span class="count-note">3 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">4</span><span class="reading">四時</span><span class="romaji">yoji</span></div>
+      <div class="irr-card"><span class="n">7</span><span class="reading">七時</span><span class="romaji">shichiji</span></div>
+      <div class="irr-card"><span class="n">9</span><span class="reading">九時</span><span class="romaji">kuji</span></div>
+    </div>
+  </div>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">分</span><span class="romaji-main">fun</span><span class="label">minute</span><span class="count-note">5 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">1</span><span class="reading">一分</span><span class="romaji">ippun</span></div>
+      <div class="irr-card"><span class="n">3</span><span class="reading">三分</span><span class="romaji">sanpun</span></div>
+      <div class="irr-card"><span class="n">6</span><span class="reading">六分</span><span class="romaji">roppun</span></div>
+      <div class="irr-card"><span class="n">8</span><span class="reading">八分</span><span class="romaji">happun</span></div>
+      <div class="irr-card"><span class="n">10</span><span class="reading">十分</span><span class="romaji">juppun</span></div>
+    </div>
+  </div>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">歳</span><span class="romaji-main">sai</span><span class="label">age</span><span class="count-note">4 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">1</span><span class="reading">一歳</span><span class="romaji">issai</span></div>
+      <div class="irr-card"><span class="n">8</span><span class="reading">八歳</span><span class="romaji">hassai</span></div>
+      <div class="irr-card"><span class="n">10</span><span class="reading">十歳</span><span class="romaji">jussai</span></div>
+      <div class="irr-card"><span class="n">20</span><span class="reading">二十歳</span><span class="romaji">hatachi</span></div>
+    </div>
+  </div>
+
+  <div class="counter-block">
+    <div class="counter-head"><span class="kanji">年生</span><span class="romaji-main">nensei</span><span class="label">grade</span><span class="count-note">1 irregular</span></div>
+    <div class="irr-cards">
+      <div class="irr-card"><span class="n">4</span><span class="reading">四年生</span><span class="romaji">yonensei</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>不規則 · irregularities only</footer>
+
+</div>
+
+<script>
+// ---- number builder ----
+const kanjiDigit = ['','一','二','三','四','五','六','七','八','九'];
+const romajiDigit = ['','ichi','ni','san','yon','go','roku','nana','hachi','kyuu'];
+
+function hyakuWord(d){
+  const map = {1:'hyaku',3:'sanbyaku',6:'roppyaku',8:'happyaku'};
+  return map[d] || (romajiDigit[d]+'hyaku');
+}
+function senWord(d){
+  const map = {1:'sen',3:'sanzen',8:'hassen'};
+  return map[d] || (romajiDigit[d]+'sen');
+}
+function juuWord(d){
+  return d===1 ? 'juu' : romajiDigit[d]+'juu';
+}
+// Decompose a number 0-9999 into its sen/hyaku/juu/ichi place-value blocks.
+function decomposeLow(n){
+  const sen = Math.floor(n/1000); let rem = n%1000;
+  const hyaku = Math.floor(rem/100); rem%=100;
+  const juu = Math.floor(rem/10); rem%=10;
+  const ichi = rem;
+  const blocks = [];
+  if(sen>0) blocks.push({k:(sen===1?'':kanjiDigit[sen])+'千', r:senWord(sen), changed:[3,8].includes(sen)});
+  if(hyaku>0) blocks.push({k:(hyaku===1?'':kanjiDigit[hyaku])+'百', r:hyakuWord(hyaku), changed:[3,6,8].includes(hyaku)});
+  if(juu>0) blocks.push({k:(juu===1?'':kanjiDigit[juu])+'十', r:juuWord(juu), changed:false});
+  if(ichi>0) blocks.push({k:kanjiDigit[ichi], r:romajiDigit[ichi], changed:false});
+  return blocks;
+}
+
+function buildNumber(n){
+  n = Math.max(1, Math.min(99999999, Math.floor(n)));
+  const manNum = Math.floor(n/10000);
+  const rem = n%10000;
+
+  let blocks = [];
+
+  if(manNum>0){
+    // The man-multiplier is itself an ordinary compound number (e.g. 23 -> 二十三).
+    // 万/man attaches as a suffix onto its smallest nonzero block.
+    const manBlocks = decomposeLow(manNum);
+    const last = manBlocks[manBlocks.length-1];
+    last.k = last.k + '万';
+    last.r = last.r + 'man';
+    blocks = blocks.concat(manBlocks);
+  }
+
+  if(rem>0){
+    blocks = blocks.concat(decomposeLow(rem));
+  }
+
+  if(blocks.length===0){ blocks.push({k:'零', r:'zero', changed:false}); }
+
+  return {
+    blocks,
+    kanji: blocks.map(b=>b.k).join(''),
+    romaji: blocks.map(b=>b.r).join(' ')
+  };
+}
+
+const numInput = document.getElementById('numInput');
+const sliderLow = document.getElementById('numSliderLow');
+const sliderHigh = document.getElementById('numSliderHigh');
+const scaleBtns = document.querySelectorAll('.scale-btn');
+const blocksEl = document.getElementById('blocks');
+const resultKanji = document.getElementById('resultKanji');
+const resultRomaji = document.getElementById('resultRomaji');
+
+let scale = 'low'; // 'low' = 1-10,000, 'high' = 10,000-99,999,999
+
+function render(n){
+  const {blocks, kanji, romaji} = buildNumber(n);
+  blocksEl.innerHTML = '';
+  blocks.forEach(b=>{
+    const el = document.createElement('div');
+    el.className = 'block' + (b.changed ? ' changed':'');
+    el.innerHTML = `<div class="k">${b.k}</div><div class="r">${b.r}</div>`;
+    blocksEl.appendChild(el);
+  });
+  resultKanji.textContent = kanji;
+  resultRomaji.textContent = romaji;
+}
+
+function setScale(next, n){
+  scale = next;
+  scaleBtns.forEach(b => b.classList.toggle('active', b.dataset.scale === next));
+  sliderLow.style.display = next === 'low' ? '' : 'none';
+  sliderHigh.style.display = next === 'high' ? '' : 'none';
+  if(next === 'low'){
+    sliderLow.value = Math.max(1, Math.min(10000, n));
+  } else {
+    sliderHigh.value = Math.max(10000, Math.min(99999999, n));
+  }
+}
+
+scaleBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const n = Number(numInput.value) || 1;
+    const target = btn.dataset.scale;
+    // jump to a sensible starting value when crossing into a range the
+    // current number doesn't belong to
+    const nextN = target === 'low' ? Math.min(n, 10000) : Math.max(n, 10000);
+    numInput.value = nextN;
+    setScale(target, nextN);
+    render(nextN);
+  });
+});
+
+sliderLow.addEventListener('input', e=>{
+  numInput.value = e.target.value;
+  render(Number(e.target.value));
+});
+sliderHigh.addEventListener('input', e=>{
+  numInput.value = e.target.value;
+  render(Number(e.target.value));
+});
+numInput.addEventListener('input', e=>{
+  let v = e.target.value.replace(/[^0-9]/g,'');
+  if(v===''){return;}
+  v = Math.max(1, Math.min(99999999, Number(v)));
+  const nextScale = v <= 10000 ? 'low' : 'high';
+  if(nextScale !== scale){ setScale(nextScale, v); }
+  else if(nextScale === 'low'){ sliderLow.value = v; }
+  else { sliderHigh.value = v; }
+  render(v);
+});
+
+render(3862);
+</script>
+
+</body>
+</html>

@@ -12,15 +12,16 @@ generic web form.
 | `public/index.html` | Home / entry point — menu of quizzes | `public/quiz.css` |
 | `public/numbers.html` | Numbers quiz (1–9999, both directions) | `public/quiz.css` |
 | `public/counters.html` | Counters quiz (hours / age / class year) | `public/quiz.css` |
-| `public/numbers-notes.html` | Reference: how Japanese numbers are built | self-contained `<style>` |
-| `public/counters-notes.html` | Reference: counter irregularities | self-contained `<style>` |
+| `public/notes.html` | Reference: number & counter irregularities + number builder | self-contained `<style>` |
 | `public/notes.js` | Shared `NOTES` data (`{id, title, href}`) linking quizzes → notes | — |
 | `public/favicon.png` | Enso-circle logo (180×180), also used as the in-app logo | — |
 
-**The three quiz pages share `public/quiz.css`.** The two notes pages each keep their own
-inline `<style>` (they are visually complete and treated as **finalized reference designs** —
-do not restyle them unless explicitly asked). The quiz pages were deliberately brought *up to*
-the notes pages' look; the notes pages are the reference, not the other way around.
+**The three quiz pages share `public/quiz.css`.** The single notes page keeps its own
+inline `<style>` (it is visually complete and treated as a **finalized reference design** —
+do not restyle it unless explicitly asked). The quiz pages were deliberately brought *up to*
+the notes page's look; the notes page is the reference, not the other way around. It uses the
+vermillion "red-pen" palette (see below) and contains only irregularities plus the interactive
+number builder.
 
 Served as static assets by Cloudflare Workers (`wrangler.jsonc`, `assets.directory = ./public`).
 No build step, no framework — plain HTML/CSS/JS.
@@ -77,16 +78,14 @@ and dark mode falls out automatically (`@media (prefers-color-scheme: dark)`).
 **`--hanko` (brand/CTA red) is intentionally distinct from `--wrong` (error red)** so the
 primary button color and the "wrong answer" color never get confused.
 
-### Notes pages (reference palettes, for consistency when editing them)
-- `numbers-notes.html`: `--paper #F2EDE1`, `--paper-alt #E9E1CC`, `--card #FBF8F0`,
-  `--ink #1C2530`, `--ink-soft #5B6472`, `--indigo #2B4570`, `--indigo-deep #182B47`,
-  `--hanko #B33A3A`, `--gold #A8823C`, `--line #D8CEB6`. (Quiz light palette is derived from this.)
-- `counters-notes.html`: red-pen variant — `--paper #EDE7D9`, `--paper-dark #E1D9C6`,
+### Notes page (reference palette, for consistency when editing it)
+- `notes.html`: red-pen variant — `--paper #EDE7D9`, `--paper-dark #E1D9C6`,
   `--ink #2B2B29`, `--ink-soft #5C574E`, `--shu #C1440E` (vermillion), `--shu-soft #E8DCC8`,
-  `--line #C9BFA8`.
+  `--line #C9BFA8`. Irregular cards and "changed" builder tiles are outlined/filled with `--shu`.
 
-Neither notes page has a dark mode (they are light-only by design). Dark values above were
-authored specifically for the quiz pages.
+The notes page has no dark mode (light-only by design). The quiz light palette is derived from
+the earlier warm-indigo notes palette (`--paper #F2EDE1`, `--indigo #2B4570`, `--hanko #B33A3A`,
+etc.); dark values in the quiz table were authored specifically for the quiz pages.
 
 ## Layout
 

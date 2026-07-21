@@ -13,9 +13,9 @@ time rather than long sit-down study blocks. No need to design for unknown/gener
 ## Product Purpose
 
 A personal Japanese-study tool: two quizzes (numbers 1–9999 both directions; counters —
-hours, age, class-year) drill recall with immediate correct/wrong feedback, and two reference
-pages (numbers-notes, counters-notes) explain the underlying rules and irregularities for when
-a quick lookup is needed mid-study. Success = low-friction daily practice that actually gets
+hours, age, class-year) drill recall with immediate correct/wrong feedback, and one reference
+page (notes) collects the number and counter irregularities plus an interactive number builder
+for when a quick lookup is needed mid-study. Success = low-friction daily practice that actually gets
 used — fast to open, fast to answer, fast to move to the next question.
 
 ## Brand Personality

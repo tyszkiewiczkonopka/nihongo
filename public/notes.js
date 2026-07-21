@@ -1,4 +1,4 @@
 const NOTES = [
-  { id: 'numbers-reference', title: 'Numbers explained →', href: 'numbers-notes.html' },
-  { id: 'counters-reference', title: 'Counter irregularities →', href: 'counters-notes.html' }
+  { id: 'numbers-reference', title: 'Irregularities →', href: 'notes.html' },
+  { id: 'counters-reference', title: 'Irregularities →', href: 'notes.html' }
 ];
