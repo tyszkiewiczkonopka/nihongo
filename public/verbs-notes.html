@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動詞 — Verb Conjugation (Chapter 2)</title>
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE7D9;
+    --paper-dark:#E1D9C6;
+    --ink:#2B2B29;
+    --ink-soft:#5C574E;
+    --shu:#C1440E;
+    --shu-soft:#E8DCC8;
+    --line:#C9BFA8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .jp{font-family:'Shippori Mincho',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px 60px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:90px 24px 58px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--shu);
+    margin-bottom:26px;
+  }
+  .pillars{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+  }
+  .pillar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:14px 20px;
+    min-width:150px;
+  }
+  .pillar .num{
+    font-family:'Shippori Mincho',serif;
+    font-size:40px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1;
+  }
+  .pillar .rule{
+    margin-top:12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--shu);
+    line-height:1.4;
+  }
+  .pillar .sep{
+    font-size:22px;
+    color:var(--line);
+    align-self:center;
+    margin:0 2px;
+  }
+  h1{
+    font-family:'Shippori Mincho',serif;
+    font-weight:600;
+    font-size:32px;
+    line-height:1.3;
+    margin:0;
+    color:var(--ink);
+  }
+
+  section{padding:38px 0;}
+  section + section{border-top:1px solid var(--line);}
+  h2{
+    font-family:'Shippori Mincho',serif;
+    font-weight:600;
+    font-size:24px;
+    line-height:1.3;
+    margin:0 0 20px;
+  }
+
+  /* ---------- VERB TABLE ---------- */
+  .vtable{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .vrow{
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr;
+    align-items:center;
+    gap:10px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:12px 16px;
+  }
+  .vrow.exc{
+    background:var(--shu-soft);
+    border-color:var(--shu);
+  }
+  .vdict .reading{
+    font-family:'Shippori Mincho',serif;
+    font-size:1.4rem;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.1;
+  }
+  .vdict .kanji{
+    font-family:'Shippori Mincho',serif;
+    font-size:0.95rem;
+    color:var(--ink-soft);
+    opacity:0.6;
+    margin-left:8px;
+  }
+  .vdict .romaji{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .vdict .en{
+    display:block;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:3px;
+  }
+  .vform{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .vform .kana{
+    font-family:'Shippori Mincho',serif;
+    font-size:1.05rem;
+    color:var(--ink);
+  }
+  .vform .romaji{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  /* the ending that changes between forms */
+  .hi{color:var(--shu);font-weight:700;}
+
+  .col-head{
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr;
+    gap:10px;
+    padding:0 16px 8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .exc-note{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    padding-left:14px;
+    border-left:2px solid var(--shu);
+  }
+  .exc-note b{color:var(--shu);}
+
+  footer{
+    text-align:center;
+    padding:30px 0 0;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+  }
+
+  @media (max-width:520px){
+    .vrow, .col-head{grid-template-columns:1fr;}
+    .col-head{display:none;}
+    .pillar{min-width:0;flex:1;}
+    .vform{flex-direction:row;align-items:baseline;gap:8px;}
+    .vform::before{
+      font-family:'IBM Plex Mono',monospace;
+      font-size:10px;
+      letter-spacing:0.05em;
+      color:var(--ink-soft);
+      min-width:58px;
+    }
+    .vform.aff::before{content:'\FF5E\307E\3059';}
+    .vform.neg::before{content:'\FF5E\307E\305B\3093';}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="eyebrow">Chapter 2 · Verb conjugation</div>
+  <div class="pillars">
+    <div class="pillar"><div class="num">I</div><div class="rule">u&#8209;row&nbsp;→&nbsp;i&#8209;row<br>＋ます</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="num">II</div><div class="rule">drop る<br>＋ます</div></div>
+    <span class="sep">·</span>
+    <div class="pillar"><div class="num">III</div><div class="rule">irregular</div></div>
+  </div>
+  <h1>Dictionary form → ～ます / ～ません</h1>
+</section>
+
+<div class="wrap">
+
+<section>
+  <h2>Group I</h2>
+  <div class="col-head"><span>dictionary</span><span>～ます</span><span>～ません</span></div>
+  <div class="vtable" id="group-I"></div>
+  <p class="exc-note"><b>かえる (帰る)</b> ends in <b>-eru</b> and looks like Group II, but conjugates like Group I: the final る shifts to <b>り</b> → かえ<b>り</b>ます, <em>not</em> かえます. A classic exception — memorize it separately.</p>
+</section>
+
+<section>
+  <h2>Group II</h2>
+  <div class="col-head"><span>dictionary</span><span>～ます</span><span>～ません</span></div>
+  <div class="vtable" id="group-II"></div>
+</section>
+
+<section>
+  <h2>Group III</h2>
+  <div class="col-head"><span>dictionary</span><span>～ます</span><span>～ません</span></div>
+  <div class="vtable" id="group-III"></div>
+</section>
+
+<footer>動詞 · dictionary → ～ます / ～ません · 15 verbs</footer>
+
+</div>
+
+<script>
+  // Each form is split [before, changed-ending, after]; the middle part is the
+  // ending that changes between dictionary and polite form, rendered in red.
+  const GROUPS = {
+    'I': [
+      { en:'to go',            kanji:'行く', dk:['い','く',''],   dr:['ik','u',''],     mk:['い','きます',''],   mr:['ik','imasu',''],     nk:['い','きません',''],   nr:['ik','imasen',''] },
+      { en:'to listen / ask',  kanji:'聞く', dk:['き','く',''],   dr:['kik','u',''],    mk:['き','きます',''],   mr:['kik','imasu',''],    nk:['き','きません',''],   nr:['kik','imasen',''] },
+      { en:'to wait',          kanji:'待つ', dk:['ま','つ',''],   dr:['ma','tsu',''],   mk:['ま','ちます',''],   mr:['ma','chimasu',''],   nk:['ま','ちません',''],   nr:['ma','chimasen',''] },
+      { en:'to drink',         kanji:'飲む', dk:['の','む',''],   dr:['no','mu',''],    mk:['の','みます',''],   mr:['no','mimasu',''],    nk:['の','みません',''],   nr:['no','mimasen',''] },
+      { en:'to speak / talk',  kanji:'話す', dk:['はな','す',''], dr:['hana','su',''],  mk:['はな','します',''], mr:['hana','shimasu',''], nk:['はな','しません',''], nr:['hana','shimasen',''] },
+      { en:'to read',          kanji:'読む', dk:['よ','む',''],   dr:['yo','mu',''],    mk:['よ','みます',''],   mr:['yo','mimasu',''],    nk:['よ','みません',''],   nr:['yo','mimasen',''] },
+      { en:'to buy',           kanji:'買う', dk:['か','う',''],   dr:['ka','u',''],     mk:['か','います',''],   mr:['ka','imasu',''],     nk:['か','いません',''],   nr:['ka','imasen',''] },
+      { en:'to return (home)', kanji:'帰る', exc:true, dk:['かえ','る',''], dr:['kae','ru',''], mk:['かえ','ります',''], mr:['kae','rimasu',''], nk:['かえ','りません',''], nr:['kae','rimasen',''] },
+    ],
+    'II': [
+      { en:'to wake up',       kanji:'起きる', dk:['おき','る',''], dr:['oki','ru',''], mk:['おき','ます',''],   mr:['oki','masu',''],   nk:['おき','ません',''],   nr:['oki','masen',''] },
+      { en:'to eat',           kanji:'食べる', dk:['たべ','る',''], dr:['tabe','ru',''], mk:['たべ','ます',''],  mr:['tabe','masu',''],  nk:['たべ','ません',''],  nr:['tabe','masen',''] },
+      { en:'to sleep',         kanji:'寝る',   dk:['ね','る',''],   dr:['ne','ru',''],   mk:['ね','ます',''],    mr:['ne','masu',''],    nk:['ね','ません',''],    nr:['ne','masen',''] },
+      { en:'to see / watch',   kanji:'見る',   dk:['み','る',''],   dr:['mi','ru',''],   mk:['み','ます',''],    mr:['mi','masu',''],    nk:['み','ません',''],    nr:['mi','masen',''] },
+    ],
+    'III': [
+      { en:'to do',    kanji:'',       dk:['','する',''],       dr:['','suru',''],        mk:['','します',''],       mr:['','shimasu',''],        nk:['','しません',''],       nr:['','shimasen',''] },
+      { en:'to come',  kanji:'来る',   dk:['','くる',''],       dr:['','kuru',''],        mk:['','きます',''],       mr:['','kimasu',''],         nk:['','きません',''],       nr:['','kimasen',''] },
+      { en:'to study', kanji:'勉強する', dk:['べんきょう','する',''], dr:['benkyou ','suru',''], mk:['べんきょう','します',''], mr:['benkyou ','shimasu',''], nk:['べんきょう','しません',''], nr:['benkyou ','shimasen',''] },
+    ],
+  };
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function seg(parts){
+    const [a,b,c] = parts;
+    return esc(a) + (b ? '<span class="hi">' + esc(b) + '</span>' : '') + esc(c);
+  }
+
+  function rowHtml(v){
+    const kanji = v.kanji ? '<span class="kanji jp">' + esc(v.kanji) + '</span>' : '';
+    return '<div class="vrow' + (v.exc ? ' exc' : '') + '">'
+      + '<div class="vdict">'
+        + '<span class="reading jp">' + seg(v.dk) + '</span>' + kanji
+        + '<span class="romaji">' + seg(v.dr) + '</span>'
+        + '<span class="en">' + esc(v.en) + '</span>'
+      + '</div>'
+      + '<div class="vform aff"><span class="kana jp">' + seg(v.mk) + '</span><span class="romaji">' + seg(v.mr) + '</span></div>'
+      + '<div class="vform neg"><span class="kana jp">' + seg(v.nk) + '</span><span class="romaji">' + seg(v.nr) + '</span></div>'
+    + '</div>';
+  }
+
+  for (const g of ['I','II','III']) {
+    document.getElementById('group-' + g).innerHTML = GROUPS[g].map(rowHtml).join('');
+  }
+</script>
+
+</body>
+</html>

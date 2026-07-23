@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nihongo Dojo — Verbs</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <meta name="apple-mobile-web-app-title" content="Nihongo Dojo" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#F2EDE1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+  <style>
+    .verb-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .verb-kana {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 52px;
+      font-weight: 600;
+      line-height: 1.05;
+      color: var(--ink);
+    }
+    .verb-kanji {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      opacity: 0.5;
+    }
+    @media (max-width: 480px) {
+      .verb-kana { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="container quiz-container">
+      <header class="quiz-header">
+        <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
+        <a class="hint-link" id="hintLink" target="_blank" rel="noopener" aria-label="Reference notes" title="Reference notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2V5Z" />
+            <path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2V5Z" />
+          </svg>
+        </a>
+      </header>
+
+      <div class="unit-label" style="text-align:center;margin-bottom:0.75rem;">Dictionary → ～ます / ～ません</div>
+
+      <div class="card">
+        <div class="verb-display">
+          <span class="verb-kana jp" id="verbKana">—</span>
+          <span class="verb-kanji jp" id="verbKanji"></span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="answerInput" placeholder="e.g. ikimasu ikimasen" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" />
+        <button class="btn-primary check-btn" id="checkBtn" onclick="checkAnswer()">Check</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+
+      <div class="stats">
+        <span class="stat"><span class="stat-num" id="statCorrect">0</span> <span class="stat-label">correct</span></span>
+        <span class="stats-divider">·</span>
+        <span class="stat"><span class="stat-num" id="statWrong">0</span> <span class="stat-label">wrong</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="notes.js"></script>
+  <script src="quiz-feedback.js"></script>
+  <script>
+    const note = NOTES.find(n => n.id === 'verbs-reference');
+    if (note) document.getElementById('hintLink').href = note.href;
+
+    // Rozdział 2 — dictionary form → polite present affirmative (～ます) and negative (～ません).
+    // masu/masen hold the romaji answer (spaces are ignored when checking, so
+    // "benkyoushimasu" and "benkyou shimasu" both match).
+    const VERBS = [
+      { kana: 'おきる', kanji: '起きる', group: 'II', pl: 'budzić się',        masu: 'okimasu',        masen: 'okimasen' },
+      { kana: 'たべる', kanji: '食べる', group: 'II', pl: 'jeść',              masu: 'tabemasu',       masen: 'tabemasen' },
+      { kana: 'ねる',   kanji: '寝る',   group: 'II', pl: 'spać',              masu: 'nemasu',         masen: 'nemasen' },
+      { kana: 'みる',   kanji: '見る',   group: 'II', pl: 'patrzeć / oglądać', masu: 'mimasu',         masen: 'mimasen' },
+      { kana: 'いく',   kanji: '行く',   group: 'I',  pl: 'iść',               masu: 'ikimasu',        masen: 'ikimasen' },
+      { kana: 'かえる', kanji: '帰る',   group: 'I',  pl: 'wracać', note: 'wygląda jak grupa II, ale odmienia się jak grupa I', masu: 'kaerimasu', masen: 'kaerimasen' },
+      { kana: 'きく',   kanji: '聞く',   group: 'I',  pl: 'słuchać / pytać',   masu: 'kikimasu',       masen: 'kikimasen' },
+      { kana: 'まつ',   kanji: '待つ',   group: 'I',  pl: 'czekać',            masu: 'machimasu',      masen: 'machimasen' },
+      { kana: 'のむ',   kanji: '飲む',   group: 'I',  pl: 'pić',               masu: 'nomimasu',       masen: 'nomimasen' },
+      { kana: 'はなす', kanji: '話す',   group: 'I',  pl: 'rozmawiać / mówić', masu: 'hanashimasu',    masen: 'hanashimasen' },
+      { kana: 'よむ',   kanji: '読む',   group: 'I',  pl: 'czytać',            masu: 'yomimasu',       masen: 'yomimasen' },
+      { kana: 'かう',   kanji: '買う',   group: 'I',  pl: 'kupować',           masu: 'kaimasu',        masen: 'kaimasen' },
+      { kana: 'する',   kanji: '',       group: 'III', pl: 'robić',            masu: 'shimasu',        masen: 'shimasen' },
+      { kana: 'くる',   kanji: '来る',   group: 'III', pl: 'przychodzić',      masu: 'kimasu',         masen: 'kimasen' },
+      { kana: 'べんきょうする', kanji: '勉強する', group: 'III', pl: 'uczyć się', masu: 'benkyoushimasu', masen: 'benkyoushimasen' },
+    ];
+
+    let pool = [];
+    let current = null;
+    let correct = 0, wrong = 0;
+    let answered = false;
+
+    function shuffle(array) {
+      const a = [...array];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function nextVerb() {
+      if (pool.length === 0) pool = shuffle(VERBS);
+      // avoid repeating the same verb twice in a row
+      if (pool.length > 1 && current && pool[pool.length - 1] === current) {
+        [pool[pool.length - 1], pool[0]] = [pool[0], pool[pool.length - 1]];
+      }
+      return pool.pop();
+    }
+
+    function normalize(s) {
+      return s.trim().toLowerCase().replace(/\s+/g, '').replace(/ō/g, 'oo').replace(/ū/g, 'uu');
+    }
+
+    function nextQuestion() {
+      current = nextVerb();
+      answered = false;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('answerInput').value = '';
+      document.getElementById('answerInput').readOnly = false;
+      document.getElementById('checkBtn').textContent = 'Check';
+      document.getElementById('verbKana').textContent = current.kana;
+      document.getElementById('verbKanji').textContent = current.kanji || '';
+      document.getElementById('answerInput').focus();
+    }
+
+    function checkAnswer() {
+      if (answered) { nextQuestion(); return; }
+      const raw = document.getElementById('answerInput').value;
+
+      answered = true;
+      document.getElementById('answerInput').readOnly = true;
+      document.getElementById('checkBtn').textContent = 'Next →';
+
+      const combined = current.masu + ' ' + current.masen;
+      const isCorrect = normalize(raw) === normalize(combined);
+
+      const mainHtml = isCorrect ? '正解！ Correct!' : diffHighlight(combined, raw, normalize);
+      let sub = current.pl + ' · Grupa ' + current.group;
+      if (current.note) sub += ' — ' + current.note;
+
+      document.getElementById('feedback').innerHTML = feedbackHtml(mainHtml, sub);
+      document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      if (isCorrect) { correct++; } else { wrong++; }
+      document.getElementById('statCorrect').textContent = correct;
+      document.getElementById('statWrong').textContent = wrong;
+    }
+
+    document.getElementById('answerInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    nextQuestion();
+  </script>
+</body>
+</html>
