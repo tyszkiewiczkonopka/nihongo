@@ -398,6 +398,17 @@ button:hover { background: var(--paper-alt); }
 /* ---------- homepage menu ---------- */
 .menu { display: flex; flex-direction: column; gap: 10px; }
 
+.menu-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 8px 0 -2px 2px;
+}
+
+.menu-section-label:first-child { margin-top: 0; }
+
 .menu-item {
   display: flex;
   align-items: center;
@@ -432,6 +443,57 @@ button:hover { background: var(--paper-alt); }
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+
+/* ---------- grammar hub (grammar.html) ---------- */
+.grammar-lead {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: -0.5rem 0 1.5rem;
+}
+
+.grammar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper-alt);
+  color: var(--ink);
+  text-decoration: none;
+  min-height: 128px;
+  transition: background 0.15s;
+}
+
+.tile:hover { background: var(--card); }
+
+.tile-icon {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--indigo);
+}
+
+.tile-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: auto;
+}
+
+.tile-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
   color: var(--ink-soft);
 }
 

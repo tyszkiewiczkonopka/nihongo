@@ -44,7 +44,7 @@
     <div class="container quiz-container">
       <header class="quiz-header">
         <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
-        <a class="hint-link" id="hintLink" target="_blank" rel="noopener" aria-label="Reference notes" title="Reference notes">
+        <a class="hint-link" href="grammar" target="_blank" rel="noopener" aria-label="Grammar reference" title="Grammar reference">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2V5Z" />
             <path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2V5Z" />
@@ -75,12 +75,8 @@
     </div>
   </div>
 
-  <script src="notes.js"></script>
   <script src="quiz-feedback.js"></script>
   <script>
-    const note = NOTES.find(n => n.id === 'verbs-reference');
-    if (note) document.getElementById('hintLink').href = note.href;
-
     // Rozdział 2 — dictionary form → polite present affirmative (～ます) and negative (～ません).
     // masu/masen hold the romaji answer (spaces are ignored when checking, so
     // "benkyoushimasu" and "benkyou shimasu" both match).
