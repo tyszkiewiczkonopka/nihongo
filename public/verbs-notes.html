@@ -208,9 +208,44 @@
     .vform.aff::before{content:'\FF5E\307E\3059';}
     .vform.neg::before{content:'\FF5E\307E\305B\3093';}
   }
+
+  /* ---------- PRINT ---------- */
+  .print-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:10px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    z-index:10;
+  }
+  .print-btn:hover{border-color:var(--shu);color:var(--shu);}
+  @media (max-width:520px){
+    .print-btn{position:static;margin:16px auto 0;display:flex;width:fit-content;}
+  }
+  @media print{
+    .print-btn{display:none;}
+    @page{margin:1.4cm;}
+    body{background:#fff;}
+    .hero{padding:0 0 24px;}
+    .vrow{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{padding:16px 0;}
+    .vrow{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
+
+<button class="print-btn" onclick="window.print()">&#128438; Print / Save as PDF</button>
 
 <section class="hero">
   <div class="eyebrow">Chapter 2 · Verb conjugation</div>

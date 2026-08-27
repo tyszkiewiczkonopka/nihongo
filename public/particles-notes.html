@@ -187,9 +187,44 @@
     .pillar{min-width:0;padding:10px 10px;}
     .pillar .kana{font-size:40px;}
   }
+
+  /* ---------- PRINT ---------- */
+  .print-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:10px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    z-index:10;
+  }
+  .print-btn:hover{border-color:var(--shu);color:var(--shu);}
+  @media (max-width:520px){
+    .print-btn{position:static;margin:16px auto 0;display:flex;width:fit-content;}
+  }
+  @media print{
+    .print-btn{display:none;}
+    @page{margin:1.4cm;}
+    body{background:#fff;}
+    .hero{padding:0 0 24px;}
+    .pattern{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{padding:18px 0;break-inside:avoid;}
+    .use{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
+
+<button class="print-btn" onclick="window.print()">&#128438; Print / Save as PDF</button>
 
 <section class="hero">
   <div class="eyebrow">Chapter 2 · Particles · 助詞</div>

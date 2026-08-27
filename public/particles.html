@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nihongo Dojo — Particles</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <meta name="apple-mobile-web-app-title" content="Nihongo Dojo" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#F2EDE1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz.css">
+  <style>
+    .cloze-sentence {
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 500;
+      font-size: 1.6rem;
+      line-height: 1.7;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      gap: 1px;
+    }
+    .bracket { color: var(--hanko); font-weight: 600; }
+    .cloze-blank {
+      display: inline-block;
+      min-width: 1.5em;
+      text-align: center;
+      border-bottom: 2px solid var(--line);
+      color: var(--indigo-deep);
+      font-weight: 700;
+      padding: 0 2px;
+    }
+    .cloze-blank.correct { color: var(--correct); border-bottom-color: var(--correct); }
+    .cloze-blank.wrong { color: var(--wrong); border-bottom-color: var(--wrong); }
+    .particle-choices { flex-wrap: wrap; row-gap: 6px; }
+    .particle-choices .mode-btn {
+      flex: 1 1 auto;
+      min-width: 42px;
+      padding: 12px 8px;
+      font-size: 18px;
+    }
+    .particle-choices .mode-btn:disabled { opacity: 0.55; cursor: default; }
+    .particle-choices .mode-btn.choice-correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: var(--correct);
+      opacity: 1;
+    }
+    .particle-choices .mode-btn.choice-wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong);
+      color: var(--wrong);
+      opacity: 1;
+    }
+
+    #nextBtn.hidden { display: none; }
+
+    @media (max-width: 480px) {
+      .cloze-sentence { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="container quiz-container">
+      <header class="quiz-header">
+        <a class="brand-home" href="./"><img class="brand-logo" src="favicon.png" alt="" /> Nihongo Dojo</a>
+        <a class="hint-link" href="grammar" target="_blank" rel="noopener" aria-label="Grammar reference" title="Grammar reference">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5a2 2 0 0 1 2-2h6v16H6a2 2 0 0 0-2 2V5Z" />
+            <path d="M20 5a2 2 0 0 0-2-2h-6v16h6a2 2 0 0 1 2 2V5Z" />
+          </svg>
+        </a>
+      </header>
+
+      <div class="unit-label" style="text-align:center;margin-bottom:0.75rem;">Tap the missing particle</div>
+
+      <div class="card">
+        <div class="cloze-sentence jp">
+          <span id="clozeBefore"></span>
+          <span class="bracket">「</span><span id="clozeBlank" class="cloze-blank"></span><span class="bracket">」</span>
+          <span id="clozeAfter"></span>
+        </div>
+      </div>
+
+      <div class="mode-toggle particle-choices" id="particleChoices">
+        <button class="mode-btn particle-btn" data-particle="を" onclick="choose('を')"><span class="jp">を</span></button>
+        <button class="mode-btn particle-btn" data-particle="へ" onclick="choose('へ')"><span class="jp">へ</span></button>
+        <button class="mode-btn particle-btn" data-particle="に" onclick="choose('に')"><span class="jp">に</span></button>
+        <button class="mode-btn particle-btn" data-particle="で" onclick="choose('で')"><span class="jp">で</span></button>
+        <button class="mode-btn particle-btn" data-particle="と" onclick="choose('と')"><span class="jp">と</span></button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-primary check-btn hidden" id="nextBtn" onclick="nextQuestion()">Next →</button>
+
+      <div class="stats">
+        <span class="stat"><span class="stat-num" id="statCorrect">0</span> <span class="stat-label">correct</span></span>
+        <span class="stats-divider">·</span>
+        <span class="stat"><span class="stat-num" id="statWrong">0</span> <span class="stat-label">wrong</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="quiz-feedback.js"></script>
+  <script>
+    // Rozdział 2 — cloze sentences drilling を・へ・に・で・と.
+    // Tap one of the five particle buttons to drop it into the blank —
+    // no typing, so this is meant to be the fastest way to drill these.
+    const QUESTIONS = [
+      { before: 'きょうはだいがく', after: 'インタビューをします。', particle: 'で', en: 'Today I do an interview at the university.', note: 'place where the action happens' },
+      { before: 'きょうはだいがくでインタビュー', after: 'します。', particle: 'を', en: 'Today I do an interview at the university.', note: 'direct object' },
+
+      { before: 'しゅうまつはたいていなんじ', after: 'おきますか。', particle: 'に', en: 'What time do you usually get up on the weekend?', note: 'point in time' },
+
+      { before: 'きっさてん', after: 'だいがくのともだちとはなします。', particle: 'で', en: 'I talk with a university friend at the café.', note: 'place where the action happens' },
+      { before: 'きっさてんでだいがくのともだち', after: 'はなします。', particle: 'と', en: 'I talk with a university friend at the café.', note: 'together with someone' },
+
+      { before: 'きょうはにく', after: 'かいます。', particle: 'を', en: "Today I'm buying meat.", note: 'direct object' },
+
+      { before: 'いえ', after: 'かえります。', particle: 'に', en: "I'm going back home.", note: 'destination of movement' },
+      { before: 'いえ', after: 'かえります。', particle: 'へ', en: "I'm going back home.", note: 'direction of movement (へ works here too, in place of に)' },
+
+      { before: 'ポケモンGOのゲーム', after: 'します。', particle: 'を', en: 'I play Pokémon GO.', note: 'direct object' },
+
+      { before: 'としょかん', after: 'ポーランドごのほんをよみます。', particle: 'で', en: 'I read a Polish book at the library.', note: 'place where the action happens' },
+      { before: 'としょかんでポーランドごのほん', after: 'よみます。', particle: 'を', en: 'I read a Polish book at the library.', note: 'direct object' },
+
+      { before: 'シャワー', after: 'あびます。', particle: 'を', en: 'I take a shower.', note: 'direct object' },
+
+      { before: 'だからよくポーランドごのがっこう', after: 'いきます。', particle: 'に', en: "That's why I often go to Polish school.", note: 'destination of movement' },
+      { before: 'だからよくポーランドごのがっこう', after: 'いきます。', particle: 'へ', en: "That's why I often go to Polish school.", note: 'direction of movement (へ works here too, in place of に)' },
+
+      { before: 'ポーランドじんのともだち', after: 'きっさてんでよくはなします。', particle: 'と', en: 'I often talk with my Polish friend at the café.', note: 'together with someone' },
+      { before: 'ポーランドじんのともだちときっさてん', after: 'よくはなします。', particle: 'で', en: 'I often talk with my Polish friend at the café.', note: 'place where the action happens' },
+
+      { before: 'いえ', after: 'ともだちとゲームをします。', particle: 'で', en: 'I play games with a friend at home.', note: 'place where the action happens' },
+      { before: 'いえでともだち', after: 'ゲームをします。', particle: 'と', en: 'I play games with a friend at home.', note: 'together with someone' },
+      { before: 'いえでともだちとゲーム', after: 'します。', particle: 'を', en: 'I play games with a friend at home.', note: 'direct object' },
+
+      { before: 'ラジオ', after: 'ききます。', particle: 'を', en: 'I listen to the radio.', note: 'direct object' },
+
+      { before: 'インターネットニュース', after: 'みます。', particle: 'を', en: 'I watch internet news.', note: 'direct object' },
+
+      { before: 'コンサート', after: 'ききます。', particle: 'を', en: 'I go to concerts.', note: 'direct object' },
+
+      { before: 'レストラン', after: 'うどんをたべます。', particle: 'で', en: 'I eat udon at a restaurant.', note: 'place where the action happens' },
+      { before: 'レストランでうどん', after: 'たべます。', particle: 'を', en: 'I eat udon at a restaurant.', note: 'direct object' },
+
+      { before: 'そこ', after: 'トトロをみます。', particle: 'で', en: 'I watch Totoro there.', note: 'place where the action happens' },
+      { before: 'そこでトトロ', after: 'みます。', particle: 'を', en: 'I watch Totoro there.', note: 'direct object' },
+    ];
+
+    let pool = [];
+    let current = null;
+    let correct = 0, wrong = 0;
+    let answered = false;
+
+    function shuffle(array) {
+      const a = [...array];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function nextItem() {
+      if (pool.length === 0) pool = shuffle(QUESTIONS);
+      // avoid repeating the same sentence twice in a row
+      if (pool.length > 1 && current && pool[pool.length - 1] === current) {
+        [pool[pool.length - 1], pool[0]] = [pool[0], pool[pool.length - 1]];
+      }
+      return pool.pop();
+    }
+
+    function nextQuestion() {
+      current = nextItem();
+      answered = false;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('clozeBefore').textContent = current.before;
+      document.getElementById('clozeAfter').textContent = current.after;
+      document.getElementById('clozeBlank').textContent = '';
+      document.getElementById('clozeBlank').className = 'cloze-blank';
+      document.getElementById('nextBtn').classList.add('hidden');
+      document.querySelectorAll('.particle-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('choice-correct', 'choice-wrong');
+      });
+    }
+
+    function choose(p) {
+      if (answered) return;
+      answered = true;
+
+      const isCorrect = p === current.particle;
+      document.getElementById('clozeBlank').textContent = current.particle;
+      document.getElementById('clozeBlank').className = 'cloze-blank ' + (isCorrect ? 'correct' : 'wrong');
+
+      document.querySelectorAll('.particle-btn').forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.particle === current.particle) btn.classList.add('choice-correct');
+        else if (btn.dataset.particle === p) btn.classList.add('choice-wrong');
+      });
+
+      const mainHtml = isCorrect ? '正解！ Correct!' : 'It’s <span class="jp">' + escapeHtml(current.particle) + '</span>';
+      const sub = current.en + (current.note ? ' — ' + current.note : '');
+
+      document.getElementById('feedback').innerHTML = feedbackHtml(mainHtml, sub);
+      document.getElementById('feedback').className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+      if (isCorrect) { correct++; } else { wrong++; }
+      document.getElementById('statCorrect').textContent = correct;
+      document.getElementById('statWrong').textContent = wrong;
+
+      document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && answered) nextQuestion();
+    });
+
+    nextQuestion();
+  </script>
+</body>
+</html>

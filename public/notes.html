@@ -287,9 +287,45 @@
     padding-top:24px;
     padding-bottom:16px;
   }
+
+  /* ---------- PRINT ---------- */
+  .print-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:10px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    z-index:10;
+  }
+  .print-btn:hover{border-color:var(--shu);color:var(--shu);}
+  @media (max-width:520px){
+    .print-btn{position:static;margin:16px auto 0;display:flex;width:fit-content;}
+  }
+  @media print{
+    .print-btn{display:none;}
+    @page{margin:1.4cm;}
+    body{background:#fff;}
+    .hero{padding:0 0 24px;}
+    .irr-card{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    section{padding:16px 0;}
+    .counter-block{break-inside:avoid;}
+    .builder-section{display:none;}
+  }
 </style>
 </head>
 <body>
+
+<button class="print-btn" onclick="window.print()">&#128438; Print / Save as PDF</button>
 
 <section class="hero">
   <div class="eyebrow">不規則 · Numbers & Counter Irregularities</div>
@@ -341,7 +377,7 @@
   </div>
 </section>
 
-<section>
+<section class="builder-section">
   <h2><span class="jp">組</span> Build it · how a number splits into tiles</h2>
   <p class="builder-intro">Type or drag. The number breaks into its place-value tiles, largest to smallest, in the order you say it aloud. Irregular tiles glow vermillion. Past 10,000, 万 (man) takes its own coefficient, so the huge scale splits into groups of four.</p>
   <div class="builder">
